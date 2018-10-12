@@ -2,7 +2,7 @@
 
 > Standard Tooling for js-multi-seed Development
 
-##Getting Started
+### Getting Started
 
 Install:
 
