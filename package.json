@@ -4,7 +4,7 @@
   "description": "Standard Tooling for js-multi-seed Development",
   "jmsGithubUrl": "https://github.com/alex86gbk/js-multi-seed.git",
   "bin": {
-    "jms": "./bin/jms.js"
+    "jms": "bin/jms.js"
   },
   "main": "./bin/jms.js",
   "scripts": {
@@ -19,6 +19,10 @@
     "vue"
   ],
   "author": "alexbian",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alex86gbk/jms-cli.git"
+  },
   "license": "MIT",
   "dependencies": {
     "chalk": "2.4.1",
