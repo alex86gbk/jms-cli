@@ -1,0 +1,28 @@
+{
+  "name": "jms-cli",
+  "version": "0.0.1",
+  "description": "Standard Tooling for js-multi-seed Development",
+  "jmsGithubUrl": "https://github.com/alex86gbk/js-multi-seed.git",
+  "bin": {
+    "jms": "bin/jms.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "alexbian",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.19.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1"
+  }
+}
