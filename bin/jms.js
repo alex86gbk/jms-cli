@@ -9,12 +9,40 @@ program.version(require('../package').version);
 // 定义使用方法
 program.usage('<command>');
 
+// 创建项目
 program
   .command('create')
   .description('Generate a new project')
   .alias('c')
   .action(() => {
-    require('../command/create')(require('../package').jmsGithubUrl);
+    require('../command/create')(require('../package').githubUrl);
+  });
+
+// 列出项目
+program
+  .command('list')
+  .description('List all the project')
+  .alias('l')
+  .action(() => {
+    require('../command/list')();
+  });
+
+// 项目控制台
+program
+  .command('console')
+  .description('Project console board')
+  .alias('cb')
+  .action(() => {
+    require('../command/console')();
+  });
+
+// 切换源
+program
+  .command('source')
+  .description('Change the npm source')
+  .alias('s')
+  .action(() => {
+    require('../command/source')();
   });
 
 program.parse(process.argv);

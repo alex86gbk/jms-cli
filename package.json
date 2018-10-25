@@ -2,7 +2,7 @@
   "name": "jms-cli",
   "version": "0.0.4",
   "description": "Standard Tooling for js-multi-seed Development",
-  "jmsGithubUrl": "https://github.com/alex86gbk/js-multi-seed.git",
+  "githubUrl": "https://github.com/alex86gbk/js-multi-seed.git",
   "bin": {
     "jms": "./bin/jms.js"
   },
