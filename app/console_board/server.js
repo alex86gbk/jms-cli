@@ -9,6 +9,8 @@ const co = require('co');
 const init = require('./init');
 const log = require('./log');
 
+const index = require('./routes/index');
+
 /**
  * 初始化 express
  */
@@ -17,7 +19,7 @@ function initExpressApp(logger) {
   app.use(logger.winstonError());
   app.set('views', path.resolve(__dirname, 'views'));
   app.set('view engine', 'jade');
-  app.use('/assets', express.static(path.resolve(__dirname, 'public')));
+  app.use('/public', express.static(path.resolve(__dirname, 'public')));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
 
@@ -38,20 +40,22 @@ function routers() {
     next();
   });
 
-  app.get('/', function (req, res, next) {
-    res.render('index');
-  });
+  app.use('/console_board/index', index);
 
   return Promise.resolve(true);
 }
 
-co(function *() {
-  const appPath = yield init.initAppPath();
-  const dbPath = yield init.initDBPath(appPath);
-  const logPath = yield init.initLogPath(appPath);
-  const database = require('./db')(dbPath);
-  const logger = yield log(logPath);
+module.exports = (options) => {
+  co(function *() {
+    const appPath = yield init.initAppPath();
+    const dbPath = yield init.initDBPath(appPath);
+    const logPath = yield init.initLogPath(appPath);
+    const database = require('./db')(dbPath);
+    const logger = yield log(logPath);
 
-  yield initExpressApp(logger);
-  yield routers();
-});
+    yield initExpressApp(logger);
+    yield routers();
+
+    options.onStart && options.onStart();
+  });
+};

@@ -1,0 +1,16 @@
+doctype html
+html(lang="zh-CN")
+  include ./templates/_head
+  body(class="console-board")
+    include ./templates/_nav
+    div(class="container-fluid")
+      div(class="row")
+        include ./templates/_project_sidebar
+        div(class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main")
+          // include ./templates/_project_tree
+          include ./templates/_project_map
+          include ./templates/_project_category
+          include ./templates/_project_service_api
+          include ./templates/_project_setting
+          include ./templates/_project_dashboard
+    include ./templates/_footer
