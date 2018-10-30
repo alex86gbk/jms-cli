@@ -108,12 +108,16 @@ body {
  * Console Board
  */
 
-.console-board .input-group-addon:first-child {
+.setting .input-group-addon:first-child {
   border-right: 1px solid #ccc;
   border-top-right-radius: 4px;
   border-bottom-left-radius: 0;
 }
-.console-board .form-control {
+.setting .form-control {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.setting .form-control[type="text"] {
+  text-align: center;
+  font-weight: bold;
 }

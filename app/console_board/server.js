@@ -6,7 +6,7 @@ const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const co = require('co');
 
-const init = require('./init');
+const init = require('../../src/init');
 const log = require('./log');
 
 const index = require('./routes/index');
@@ -49,8 +49,8 @@ module.exports = (options) => {
   co(function *() {
     const appPath = yield init.initAppPath();
     const dbPath = yield init.initDBPath(appPath);
+    const database = require('../../src/db')(dbPath);
     const logPath = yield init.initLogPath(appPath);
-    const database = require('./db')(dbPath);
     const logger = yield log(logPath);
 
     yield initExpressApp(logger);

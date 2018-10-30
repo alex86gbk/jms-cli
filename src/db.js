@@ -7,8 +7,8 @@ const DataStore = require('nedb');
  */
 function loadDBFiles(dbPath) {
   const db = {
-    item: new DataStore({
-      filename: path.join(dbPath, 'item.db'),
+    project: new DataStore({
+      filename: path.join(dbPath, 'project.db'),
       autoload: true
     }),
     category: new DataStore({
@@ -17,7 +17,7 @@ function loadDBFiles(dbPath) {
     })
   };
 
-  db.item.ensureIndex({ fieldName: 'createdDate'}, function (err) {});
+  db.project.ensureIndex({ fieldName: 'createdDate'}, function (err) {});
   db.category.ensureIndex({ fieldName: 'name'}, function (err) {});
 
   return db;

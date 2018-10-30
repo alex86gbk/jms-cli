@@ -5,7 +5,43 @@ const co = require('co');
 const prompt = require('co-prompt');
 const chalk = require('chalk');
 
-const projects = require('../projects.json');
+const init = require('../src/init');
+let project;
+let projects;
+
+/**
+ * 查询数据
+ * @param dataBase 数据库
+ */
+function queryData(dataBase) {
+  return new Promise(function (resolve, reject) {
+    dataBase.find({}).exec(function (err, docs) {
+      if (err) {
+        reject();
+      } else {
+        resolve(docs);
+      }
+    });
+  });
+}
+
+/**
+ * 插入数据
+ * @param dataBase 数据库
+ * @param data 待插入数据
+ * @return {Promise}
+ */
+function insertData(dataBase, data) {
+  return new Promise(function (resolve, reject) {
+    dataBase.insert(data, function (err) {
+      if (err) {
+        reject();
+      } else {
+        resolve();
+      }
+    });
+  });
+}
 
 /**
  * 检查项目文件夹
@@ -32,11 +68,15 @@ function checkProject(projectName) {
  * @return {Promise}
  */
 function addProject(projectName) {
+  const data = {
+    name: path.resolve(process.cwd(), projectName),
+    path: path.resolve(process.cwd(), projectName),
+  };
+
   projects.push(path.resolve(process.cwd(), projectName));
 
   return new Promise((resolve) => {
-    fs.writeFile(`${__dirname}/../projects.json`, JSON.stringify(projects), 'utf-8', (err) => {
-      if (err) console.log(err);
+    insertData(project, data).then(() => {
       console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} has been added!`));
       console.log(chalk.grey(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
@@ -53,6 +93,7 @@ function addProject(projectName) {
  */
 function cloneRepository(url, projectName) {
   const command = `git clone ${url} ${projectName} && cd ${projectName} && git checkout master`;
+
   console.log(chalk.white('\n Start generating...'));
 
   return new Promise((resolve) => {
@@ -68,15 +109,15 @@ function cloneRepository(url, projectName) {
 }
 
 /**
- * 初始化项目
- * @param init {String}
+ * 安装项目依赖
+ * @param install {String}
  * @param projectName {String}
  * @return {Promise}
  */
-function initProject(init, projectName) {
+function installProject(install, projectName) {
   const command = `cd ${projectName} && npm install`;
 
-  if (init === 'yes' || init === 'y') {
+  if (install === 'yes' || install === 'y') {
     console.log(chalk.white(' Project init...'));
 
     return new Promise((resolve) => {
@@ -97,14 +138,23 @@ function initProject(init, projectName) {
 
 module.exports = (url) => {
   co(function * create() {
+    const appPath = yield init.initAppPath();
+    const dbPath = yield init.initDBPath(appPath);
+
+    project = require('../src/db')(dbPath).project;
+    projects = yield queryData(project);
+    projects = projects.map((item) => {
+      return item.path
+    });
+
     const projectName = yield prompt('Project name: ');
 
     yield checkProject(projectName);
     yield addProject(projectName);
     yield cloneRepository(url, projectName);
 
-    const init = yield prompt('Would you like to init project? It`s maybe taken a while! (yes/no)');
+    const install = yield prompt('Would you like to install project? It`s maybe taken a while! (yes/no)');
 
-    yield initProject(init, projectName);
+    yield installProject(install, projectName);
   });
 };
