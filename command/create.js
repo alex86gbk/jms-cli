@@ -6,42 +6,10 @@ const prompt = require('co-prompt');
 const chalk = require('chalk');
 
 const init = require('../src/init');
+
+let db;
 let project;
 let projects;
-
-/**
- * 查询数据
- * @param dataBase 数据库
- */
-function queryData(dataBase) {
-  return new Promise(function (resolve, reject) {
-    dataBase.find({}).exec(function (err, docs) {
-      if (err) {
-        reject();
-      } else {
-        resolve(docs);
-      }
-    });
-  });
-}
-
-/**
- * 插入数据
- * @param dataBase 数据库
- * @param data 待插入数据
- * @return {Promise}
- */
-function insertData(dataBase, data) {
-  return new Promise(function (resolve, reject) {
-    dataBase.insert(data, function (err) {
-      if (err) {
-        reject();
-      } else {
-        resolve();
-      }
-    });
-  });
-}
 
 /**
  * 检查项目文件夹
@@ -76,7 +44,7 @@ function addProject(projectName) {
   projects.push(path.resolve(process.cwd(), projectName));
 
   return new Promise((resolve) => {
-    insertData(project, data).then(() => {
+    db.insertDataSync(project, data).then(() => {
       console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} has been added!`));
       console.log(chalk.grey(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
@@ -141,8 +109,9 @@ module.exports = (url) => {
     const appPath = yield init.initAppPath();
     const dbPath = yield init.initDBPath(appPath);
 
-    project = require('../src/db')(dbPath).project;
-    projects = yield queryData(project);
+    db = require('../src/db');
+    project = db.loadDBFiles(dbPath).project;
+    projects = yield db.queryDataSync(project);
     projects = projects.map((item) => {
       return item.path
     });

@@ -4,17 +4,42 @@ div(class="table-responsive")
   table(class="table table-striped")
     thead
       tr
-        th #
-        th 名称
+        th(width="120") 名称
         th 详细（只读）
         th 参数
-        th 示例
-        th 操作
+        th(width="600") 查看
     tbody
       tr
-        td #
-        td #
-        td #
-        td #
-        td #
-        td #
+        td 用户登录
+        td /templates/onlineExamStudent/login.ejs
+        td -
+        td
+          a(href="http://localhost:8080/onlineExamStudent/login.html" target="_blank")
+            | http://localhost:8080/onlineExamStudent/login.html
+      tr
+        td 用户首页
+        td /templates/onlineExamStudent/index.ejs
+        td -
+        td
+          a(href="http://localhost:8080/onlineExamStudent/index.html" target="_blank")
+            | http://localhost:8080/onlineExamStudent/index.html
+      tr
+        td 答题页面
+        td /templates/onlineExamStudent/answer/answer.ejs
+        td examSceneId,courseId,examPaperId
+        td
+          a(href="http://localhost:8080/onlineExamStudent/answer/answer.html?examSceneId=1&courseId=2&examPaperId=3" target="_blank")
+            | http://localhost:8080/onlineExamStudent/answer/answer.html?examSceneId=1&courseId=2&examPaperId=3
+  nav(aria-label="..." class="pull-right")
+    ul(class="pagination")
+      li(class="disabled")
+        a(href="#" aria-label="Previous")
+          span(aria-hidden="true")
+          | &laquo;
+      li(class="active")
+        a(href="#")
+          | 1
+      li(class="disabled")
+        a(href="#" aria-label="Next")
+          span(aria-hidden="true")
+          | &raquo;

@@ -1,0 +1,9 @@
+div(class="jumbotron")
+  div(class="alert alert-danger text-center" role="alert")
+    strong 错误！
+    | 项目数据读取异常。
+  p(class="text-center")
+    | 请检查项目路径
+    mark #{currentProject}
+  p(class="text-center")
+    a(href="javascript: location.reload();" class="btn btn-primary") 刷新

@@ -1,26 +1,58 @@
 h3(class="page-header" id="project_setting")
   | 项目配置
 div(class="row setting")
-  form
-    div(class="col-lg-6 col-sm-6 col-md-6")
-      div(class="form-group")
-        label(class="input-group-addon" ) 前端开发端口（默认：8080）
-        input(type="text" class="form-control" id="dev_port")
-    div(class="col-lg-6 col-sm-6 col-md-6")
-      div(class="form-group")
-        label(class="input-group-addon") Mock 数据端口（默认：3000）
-        input(type="text" class="form-control" id="mock_port")
-    div(class="col-lg-6 col-sm-6 col-md-6")
-      div(class="form-group")
-        label(class="input-group-addon") 反向代理路径（默认：/api 选填）
-        input(type="text" class="form-control" id="proxy_path")
-    div(class="col-lg-6 col-sm-6 col-md-6")
-      div(class="form-group")
-        label(class="input-group-addon") YAPI 数据地址（如：http://10.0.2.231:3333/mock/XX）
-        input(type="text" class="form-control" id="mock_YAPI")
-    div(class="col-lg-6 col-sm-6 col-md-6")
-      div(class="form-group")
-        label(class="input-group-addon") 发布路径（默认：/Content）
-        input(type="text" class="form-control" id="public_path")
+  if settableProject
+    form
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon" ) 前端开发端口（默认：8080）
+          input(type="text" class="form-control" id="dev_port")
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") Mock 数据端口（默认：3000）
+          input(type="text" class="form-control" id="mock_port")
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") 反向代理路径（默认：/api 选填）
+          input(type="text" class="form-control" id="proxy_path")
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") YAPI 数据地址（如：http://10.0.2.231:3333/mock/XX）
+          input(type="text" class="form-control" id="mock_YAPI")
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") 发布路径（默认：/Content）
+          input(type="text" class="form-control" id="public_path")
+      div(class="col-md-12")
+        button(type="submit" class="btn btn-primary pull-right") 保存
+  else
+    form
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon" ) 前端开发端口（默认：8080）
+          input(type="text" class="form-control" id="dev_port" disabled)
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") Mock 数据端口（默认：3000）
+          input(type="text" class="form-control" id="mock_port" disabled)
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") 反向代理路径（默认：/api 选填）
+          input(type="text" class="form-control" id="proxy_path" disabled)
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") YAPI 数据地址（如：http://10.0.2.231:3333/mock/XX）
+          input(type="text" class="form-control" id="mock_YAPI" disabled)
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="form-group")
+          label(class="input-group-addon") 发布路径（默认：/Content）
+          input(type="text" class="form-control" id="public_path" disabled)
+    div(class="clearfix")
     div(class="col-md-12")
-      button(type="submit" class="btn btn-primary pull-right") 保存
+      div(class="alert alert-info")
+        strong 提示！
+        | 仅 Js-Multi-Seed 版本 >= [#{settableVersion}] 可使用此功能。当前版本项目配置请直接
+        u 修改
+        | 项目文件或
+        u 升级
+        | 版本。

@@ -9,6 +9,15 @@ program.version(require('../package').version);
 // 定义使用方法
 program.usage('<command>');
 
+// 添加项目
+program
+  .command('add')
+  .description('Add a existed project')
+  .alias('a')
+  .action(() => {
+    require('../command/add')();
+  });
+
 // 创建项目
 program
   .command('create')
@@ -18,15 +27,6 @@ program
     require('../command/create')(require('../package').githubUrl);
   });
 
-// 列出项目
-program
-  .command('list')
-  .description('List all the project')
-  .alias('l')
-  .action(() => {
-    require('../command/list')();
-  });
-
 // 项目控制台
 program
   .command('console')
@@ -34,6 +34,15 @@ program
   .alias('cb')
   .action(() => {
     require('../command/console')();
+  });
+
+// 列出项目
+program
+  .command('list')
+  .description('List all the project')
+  .alias('l')
+  .action(() => {
+    require('../command/list')();
   });
 
 // 切换源

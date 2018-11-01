@@ -6,9 +6,15 @@ nav(class="navbar navbar-inverse navbar-fixed-top")
         span(class="icon-bar")
         span(class="icon-bar")
         span(class="icon-bar")
-      span(class="navbar-brand") 当前项目：
-      span(class="navbar-brand") Js-multi-seed 版本：
-    div(id="navbar" class="navbar-collapse collapse")
+      span(class="navbar-brand") 当前项目 [#{currentProject}]
+      span(class="navbar-brand") Js-Multi-Seed 版本 [#{JMSVersion}]
+    div(id="navBar" class="navbar-collapse collapse")
       form(class="navbar-form navbar-right")
         select(class="form-control")
-          option(value="") D:\local\app
+          each project in projects
+            if currentProject === project
+              option(value=project selected)
+                =project
+            else
+              option(value=project)
+                =project

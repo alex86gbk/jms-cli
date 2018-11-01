@@ -46,6 +46,7 @@ body {
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
+    width: 200px;
   }
 }
 
@@ -73,12 +74,7 @@ body {
 
 .main {
   padding: 20px;
-}
-@media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
+  margin-left: 200px;
 }
 .main .page-header {
   margin-top: 0;
@@ -108,6 +104,26 @@ body {
  * Console Board
  */
 
+.console-board-container {
+  margin-top: 20px;
+}
+.console-board-container .jumbotron {
+  background: #ffffff;
+}
+.jumbotron p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 200;
+}
+.jumbotron mark,
+.jumbotron code,
+.alert u {
+  margin: 0 10px;
+}
+.jumbotron .alert {
+  padding: 20px;
+  font-size: 20px;
+}
 .setting .input-group-addon:first-child {
   border-right: 1px solid #ccc;
   border-top-right-radius: 4px;
@@ -120,4 +136,8 @@ body {
 .setting .form-control[type="text"] {
   text-align: center;
   font-weight: bold;
+}
+.mock {
+  width: 600px;
+  height: 200px;
 }

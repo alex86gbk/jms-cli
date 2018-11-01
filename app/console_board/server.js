@@ -48,8 +48,6 @@ function routers() {
 module.exports = (options) => {
   co(function *() {
     const appPath = yield init.initAppPath();
-    const dbPath = yield init.initDBPath(appPath);
-    const database = require('../../src/db')(dbPath);
     const logPath = yield init.initLogPath(appPath);
     const logger = yield log(logPath);
 
