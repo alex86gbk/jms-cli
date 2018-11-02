@@ -12,7 +12,7 @@ program.usage('<command>');
 // 添加项目
 program
   .command('add')
-  .description('Add a existed project')
+  .description('Add an existed project')
   .alias('a')
   .action(() => {
     require('../command/add')();

@@ -11,6 +11,8 @@ let db;
 let project;
 let projects;
 
+const argv = process.argv.splice(2);
+
 /**
  * 检查项目文件夹
  * @param projectName {String}
@@ -45,7 +47,7 @@ function addProject(projectName) {
 
   return new Promise((resolve) => {
     db.insertDataSync(project, data).then(() => {
-      console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} has been added!`));
+      console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} will be generating!`));
       console.log(chalk.grey(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
       resolve();
@@ -116,7 +118,7 @@ module.exports = (url) => {
       return item.path
     });
 
-    const projectName = yield prompt('Project name: ');
+    const projectName = argv.length >= 2 ? argv[1] : yield prompt('Project name: ');
 
     yield checkProject(projectName);
     yield addProject(projectName);

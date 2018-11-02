@@ -10,6 +10,8 @@ let db;
 let project;
 let projects;
 
+const argv = process.argv.splice(2);
+
 /**
  * 检查项目文件夹
  * @param projectName {String}
@@ -62,7 +64,7 @@ module.exports = () => {
       return item.path
     });
 
-    const projectName = yield prompt('Project path: ');
+    const projectName = argv.length >= 2 ? argv[1] : yield prompt('Project name: ');
 
     yield checkProject(projectName);
     yield addProject(projectName);
