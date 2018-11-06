@@ -53,7 +53,7 @@ function addProject(projectName) {
 }
 
 module.exports = () => {
-  co(function * create() {
+  co(function * add() {
     const appPath = yield init.initAppPath();
     const dbPath = yield init.initDBPath(appPath);
 

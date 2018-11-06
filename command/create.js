@@ -6,6 +6,7 @@ const prompt = require('co-prompt');
 const chalk = require('chalk');
 
 const init = require('../src/init');
+const utils = require('../src/utils');
 
 let db;
 let project;
@@ -72,6 +73,7 @@ function cloneRepository(url, projectName) {
         console.log(error);
         process.exit();
       }
+      utils.deleteFolder(path.resolve(process.cwd(), projectName, '.git'));
       console.log(chalk.green(' Generation completed!'));
       resolve();
     });

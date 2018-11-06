@@ -45,7 +45,7 @@ function changeSource(number) {
 }
 
 module.exports = () => {
-  co(function * init() {
+  co(function * source() {
     yield listSource();
 
     const number = yield prompt(`\nChoose a order number [${listJSON(sources).key}]: `);

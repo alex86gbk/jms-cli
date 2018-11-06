@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 /**
  * formatJSONString
  * 格式化 JSON 字符串
@@ -49,7 +52,29 @@ function listJSON(obj) {
   };
 }
 
+/**
+ * 删除文件夹（非空文件夹）
+ * @param folderPath
+ */
+function deleteFolder(folderPath) {
+  let files = fs.readdirSync(folderPath);
+
+  for (let i = 0; i < files.length; i++) {
+    let curPath = path.resolve(folderPath, files[i]);
+    let stats = fs.statSync(curPath);
+
+    if (stats.isFile()) {
+      fs.unlinkSync(curPath);
+    } else {
+      deleteFolder(curPath);
+    }
+  }
+
+  fs.rmdirSync(folderPath);
+}
+
 module.exports = {
   formatJSONString,
   listJSON,
+  deleteFolder,
 };
