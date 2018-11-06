@@ -40,7 +40,7 @@ function routers() {
     next();
   });
 
-  app.use('/console_board/index', index);
+  app.use('/console_board', index);
 
   return Promise.resolve(true);
 }

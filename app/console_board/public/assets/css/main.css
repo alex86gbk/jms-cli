@@ -4,6 +4,7 @@
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
+  min-width: 1200px;
   padding-top: 50px;
 }
 
@@ -46,7 +47,7 @@ body {
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
-    width: 200px;
+    width: 150px;
   }
 }
 
@@ -74,10 +75,13 @@ body {
 
 .main {
   padding: 20px;
-  margin-left: 200px;
+  margin-left: 150px;
 }
 .main .page-header {
   margin-top: 0;
+}
+.main .btn {
+  margin: 0 5px;
 }
 
 

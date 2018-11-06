@@ -12,9 +12,10 @@ const urlHelper = new UrlHelper(location);
   /*************** dom method *******************/
   let setDomMap, renderDOM;
   /*************** event method *******************/
-  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar;
+  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickStartServer
+    , onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, initAceEditor;
+  let init, getSidebarItem, activeSidebarItem, initAceEditor, startServer, stopServer;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
   /*------------------------------- DOM ----------------------------------*/
@@ -26,6 +27,7 @@ const urlHelper = new UrlHelper(location);
       $body: $('body'),
       $navBar: $('#navBar'),
       $sidebar: $('#sidebar'),
+      $projectDashboard: $('#project_dashboard').next(),
     };
   };
 
@@ -45,6 +47,8 @@ const urlHelper = new UrlHelper(location);
   attachEvent = function () {
     domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
+    domMap.$projectDashboard.on('click', '.list-group-item > .btn-default', onClickStartServer);
+    domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
   };
 
@@ -53,7 +57,7 @@ const urlHelper = new UrlHelper(location);
    */
   onChangeProject = function () {
     urlHelper.jump({
-      path: '/console_board/index',
+      path: '/console_board',
       search: urlHelper.setSearchParam({
         project: this.value
       })
@@ -68,6 +72,24 @@ const urlHelper = new UrlHelper(location);
 
     $that.siblings().removeClass('active');
     $that.addClass('active');
+  };
+
+  /**
+   * 点击开启服务
+   */
+  onClickStartServer = function () {
+    const server = $(this).attr('data-type');
+
+    startServer(server);
+  };
+
+  /**
+   * 点击停止服务
+   */
+  onClickStopServer = function () {
+    const server = $(this).attr('data-type');
+
+    stopServer(server);
   };
 
   /**
@@ -108,6 +130,7 @@ const urlHelper = new UrlHelper(location);
       attachEvent();
       getSidebarItem();
       initAceEditor();
+      $('[data-toggle="tooltip"]').tooltip();
     });
   };
 
@@ -160,6 +183,48 @@ const urlHelper = new UrlHelper(location);
       editor.setTheme("ace/theme/eclipse");
       editor.getSession().setMode("ace/mode/json");
       editor.session.setValue(JSON.stringify(JSON.parse(value), null, 4));
+    });
+  };
+
+  /**
+   * 开启服务
+   * @param {String} server
+   */
+  startServer = function (server) {
+    $.ajax({
+      url: '/console_board/startServer',
+      type: 'post',
+      data: {
+        server: server
+      },
+      dataType: 'json',
+      success: function (data) {
+
+      },
+      error: function (data) {
+
+      }
+    });
+  };
+
+  /**
+   * 停止服务
+   * @param {String} server
+   */
+  stopServer = function (server) {
+    $.ajax({
+      url: '/console_board/stopServer',
+      type: 'post',
+      data: {
+        server: server
+      },
+      dataType: 'json',
+      success: function (data) {
+
+      },
+      error: function (data) {
+
+      }
     });
   };
   /*------------------------------- END PUBLIC ----------------------------------*/

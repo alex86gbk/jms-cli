@@ -4,12 +4,27 @@ div(class="row")
   div(class="col-lg-12")
     ul(class="list-group")
       li(class="list-group-item")
-        span 前端服务状态
-        button(type="button" class="btn btn-link btn-xs") 开启
-        button(type="button" class="btn btn-link btn-xs") 停止
-        span(class="badge list-group-item-success") 运行中
+        span(data-toggle="tooltip" data-placement="top" title="开启前端服务默认会同时开启 Mock 数据服务") 前端服务状态
+          span(class="glyphicon glyphicon-exclamation-sign" aria-hidden="true")
+        if serverStatus.devServer === 0
+          button(type="button" class="btn btn-default btn-xs" data-type="dev") 开启
+          button(type="button" class="btn btn-danger btn-xs" data-type="dev" disabled) 停止
+          span(class="badge list-group-item-danger")
+            | 未开启
+        else
+          button(type="button" class="btn btn-default btn-xs" data-type="dev" disabled) 开启
+          button(type="button" class="btn btn-danger btn-xs" data-type="dev") 停止
+          span(class="badge list-group-item-success")
+            | 运行中
       li(class="list-group-item")
         span Mock 数据服务状态
-        button(type="button" class="btn btn-link btn-xs") 开启
-        button(type="button" class="btn btn-link btn-xs") 停止
-        span(class="badge list-group-item-danger") 未开启
+        if serverStatus.mockServer === 0
+          button(type="button" class="btn btn-default btn-xs" data-type="mock") 开启
+          button(type="button" class="btn btn-danger btn-xs" data-type="mock" disabled) 停止
+          span(class="badge list-group-item-danger")
+            | 未开启
+        else
+          button(type="button" class="btn btn-default btn-xs" data-type="mock" disabled) 开启
+          button(type="button" class="btn btn-danger btn-xs" data-type="mock") 停止
+          span(class="badge list-group-item-success")
+            | 运行中
