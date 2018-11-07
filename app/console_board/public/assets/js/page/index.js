@@ -46,39 +46,39 @@ const urlHelper = new UrlHelper(location);
    * @param {Object} serverStatus
    */
   renderDashBoard = function (server, serverStatus) {
-    if (server === 'dev') {
+    if (server === 'dev-server') {
       if (serverStatus.devServer === 0 || serverStatus.devServer) {
         if (serverStatus.devServer !== 0) {
           domMap.$projectDashboard.find('.list-group-item').eq(0).html(
             '<span>前端服务状态</span>'+
-            '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
-            '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
+            '<button type="button" data-type="dev-server" disabled="" class="btn btn-success btn-xs">开启</button>'+
+            '<button type="button" data-type="dev-server" class="btn btn-danger btn-xs">停止</button>'+
             '<span class="badge list-group-item-success">运行中</span>'
           );
         } else {
           domMap.$projectDashboard.find('.list-group-item').eq(0).html(
             '<span>前端服务状态</span>'+
-            '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-            '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+            '<button type="button" data-type="dev-server" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+            '<button type="button" data-type="dev-server" disabled="" class="btn btn-danger btn-xs">停止</button>'+
             '<span class="badge list-group-item-danger">未开启</span>'
           );
         }
       }
     }
-    if (server === 'mock') {
+    if (server === 'mock-server') {
       if (serverStatus.mockServer === 0 || serverStatus.devServer) {
         if (serverStatus.mockServer !== 0) {
           domMap.$projectDashboard.find('.list-group-item').eq(1).html(
             '<span>Mock 数据服务状态</span>'+
-            '<button type="button" data-type="mock" disabled="" class="btn btn-success btn-xs">开启</button>'+
-            '<button type="button" data-type="mock" class="btn btn-danger btn-xs">停止</button>'+
+            '<button type="button" data-type="mock-server" disabled="" class="btn btn-success btn-xs">开启</button>'+
+            '<button type="button" data-type="mock-server" class="btn btn-danger btn-xs">停止</button>'+
             '<span class="badge list-group-item-success">运行中</span>'
           );
         } else {
           domMap.$projectDashboard.find('.list-group-item').eq(1).html(
             '<span>Mock 数据服务状态</span>'+
-            '<button type="button" data-type="mock" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-            '<button type="button" data-type="mock" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+            '<button type="button" data-type="mock-server" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+            '<button type="button" data-type="mock-server" disabled="" class="btn btn-danger btn-xs">停止</button>'+
             '<span class="badge list-group-item-danger">未开启</span>'
           );
         }
@@ -274,7 +274,7 @@ const urlHelper = new UrlHelper(location);
       success: function (data) {
         let serverStatus = {};
 
-        serverStatus[server + 'Server'] = 0;
+        serverStatus[server.replace('-server', '') + 'Server'] = 0;
 
         if (data.message === 'ok') {
           renderDashBoard(server, serverStatus);
@@ -299,7 +299,7 @@ const urlHelper = new UrlHelper(location);
         dataType: 'json',
         success: function (data) {
           loading = false;
-          if (data[server + 'Server'] === 0) {
+          if (data[server.replace('-server', '') + 'Server'] === 0) {
             if (loading) {
               return false;
             }

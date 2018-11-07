@@ -42,17 +42,17 @@ function serverStatus(projectPath) {
  */
 function serverStart(req, res, projectPath) {
   const server = req.body.server;
-  const devCommand = `cd ${path.resolve(projectPath)} && npm run local:cli`;
-  const mockCommand = `cd ${path.resolve(projectPath)} && npm run mock:cli`;
+  const devCommand = `cd ${path.resolve(projectPath)} && npm run dev-server`;
+  const mockCommand = `cd ${path.resolve(projectPath)} && npm run mock-server`;
 
-  if (server === 'dev') {
+  if (server === 'dev-server') {
     exec(devCommand).on('exit', function () {
-      console.log('dev stop');
+      console.log('dev-server stop');
     });
   }
-  if (server === 'mock') {
+  if (server === 'mock-server') {
     exec(mockCommand).on('exit', function () {
-      console.log('mock stop');
+      console.log('mock-server stop');
     });
   }
 
@@ -87,11 +87,14 @@ function serverStop(req, res, projectPath) {
   }
 
   co(function * stop() {
-    if (server === 'dev' && devServerStatus !== 0) {
+    if (server === 'dev-server' && devServerStatus !== 0) {
       let stats = fs.statSync(devPid);
 
       try {
         process.kill(devServerStatus);
+        if (stats.isFile()) {
+          fs.unlinkSync(devPid);
+        }
       } catch (err) {
         if (stats.isFile()) {
           fs.unlinkSync(devPid);
@@ -102,11 +105,14 @@ function serverStop(req, res, projectPath) {
         'message': 'ok'
       });
     }
-    if (server === 'mock' && mockServerStatus !== 0) {
+    if (server === 'mock-server' && mockServerStatus !== 0) {
       let stats = fs.statSync(mockPid);
 
       try {
         process.kill(mockServerStatus);
+        if (stats.isFile()) {
+          fs.unlinkSync(mockPid);
+        }
       } catch (err) {
         if (stats.isFile()) {
           fs.unlinkSync(mockPid);

@@ -7,37 +7,37 @@ div(class="row")
         li(class="list-group-item")
           span 前端服务状态
           if serverStatus.devServer === 0
-            button(type="button" class="btn btn-success btn-xs" data-type="dev" data-loading-text="开启中...") 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev" disabled) 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" data-loading-text="开启中...") 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server" disabled) 停止
             span(class="badge list-group-item-danger")
               | 未开启
           else
-            button(type="button" class="btn btn-success btn-xs" data-type="dev" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev") 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" disabled) 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server") 停止
             span(class="badge list-group-item-success")
               | 运行中
         li(class="list-group-item")
           span Mock 数据服务状态
           if serverStatus.mockServer === 0
-            button(type="button" class="btn btn-success btn-xs" data-type="mock" data-loading-text="开启中...") 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock" disabled) 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" data-loading-text="开启中...") 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server" disabled) 停止
             span(class="badge list-group-item-danger")
               | 未开启
           else
-            button(type="button" class="btn btn-success btn-xs" data-type="mock" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock") 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" disabled) 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server") 停止
             span(class="badge list-group-item-success")
               | 运行中
     else
       ul(class="list-group")
         li(class="list-group-item")
           span 前端服务状态
-            button(type="button" class="btn btn-success btn-xs" data-type="dev" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev" disabled) 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" disabled) 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server" disabled) 停止
         li(class="list-group-item")
           span Mock 数据服务状态
-            button(type="button" class="btn btn-success btn-xs" data-type="mock" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock" disabled) 停止
+            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" disabled) 开启
+            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server" disabled) 停止
       div(class="alert alert-info")
         strong 提示！
         | 当前 JMS 版本为 [#{JMSVersion}]。JMS 版本 >= [#{settableVersion}] 可使用此功能。当前版本项目配置请直接
