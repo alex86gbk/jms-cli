@@ -72,6 +72,15 @@ function stopServer(req, res) {
 }
 
 /**
+ * 检查服务状态
+ * @param req
+ * @param res
+ */
+function serverStatus(req, res) {
+  res.send(serverControl.serverStatus(currentProject));
+}
+
+/**
  * 渲染默认视图页
  * @param req
  * @param res
@@ -111,5 +120,6 @@ router.post('/getProjectCategory', getProjectCategory);
 router.post('/getServiceAPI', getServiceAPI);
 router.post('/startServer', startServer);
 router.post('/stopServer', stopServer);
+router.post('/serverStatus', serverStatus);
 
 module.exports = router;

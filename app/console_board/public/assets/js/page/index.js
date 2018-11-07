@@ -10,12 +10,13 @@ const urlHelper = new UrlHelper(location);
   let domMap = {};
   let sidebarItems = [];
   /*************** dom method *******************/
-  let setDomMap, renderDOM;
+  let setDomMap, renderDOM, renderDashBoard;
   /*************** event method *******************/
   let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickStartServer
     , onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, initAceEditor, startServer, stopServer;
+  let init, getSidebarItem, activeSidebarItem, initAceEditor, startServer, stopServer
+    , checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
   /*------------------------------- DOM ----------------------------------*/
@@ -38,6 +39,47 @@ const urlHelper = new UrlHelper(location);
   renderDOM = function (data) {
 
   };
+
+  /**
+   * 渲染仪表盘
+   * @param {Object} serverStatus
+   */
+  renderDashBoard = function (serverStatus) {
+    if (serverStatus.devServer === 0 || serverStatus.devServer) {
+      if (serverStatus.devServer !== 0) {
+        domMap.$projectDashboard.find('.list-group-item').eq(0).html(
+          '<span>前端服务状态</span>'+
+          '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
+          '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
+          '<span class="badge list-group-item-success">运行中</span>'
+        );
+      } else {
+        domMap.$projectDashboard.find('.list-group-item').eq(0).html(
+          '<span>前端服务状态</span>'+
+          '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+          '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+          '<span class="badge list-group-item-danger">未开启</span>'
+        );
+      }
+    }
+    if (serverStatus.mockServer === 0 || serverStatus.mockServer) {
+      if (serverStatus.mockServer !== 0) {
+        domMap.$projectDashboard.find('.list-group-item').eq(1).html(
+          '<span>Mock 数据服务状态</span>'+
+          '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
+          '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
+          '<span class="badge list-group-item-success">运行中</span>'
+        );
+      } else {
+        domMap.$projectDashboard.find('.list-group-item').eq(1).html(
+          '<span>Mock 数据服务状态</span>'+
+          '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+          '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+          '<span class="badge list-group-item-danger">未开启</span>'
+        );
+      }
+    }
+  };
   /*------------------------------- END DOM ----------------------------------*/
 
   /*------------------------------- EVENT ----------------------------------*/
@@ -47,7 +89,7 @@ const urlHelper = new UrlHelper(location);
   attachEvent = function () {
     domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
-    domMap.$projectDashboard.on('click', '.list-group-item > .btn-default', onClickStartServer);
+    domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
   };
@@ -80,6 +122,7 @@ const urlHelper = new UrlHelper(location);
   onClickStartServer = function () {
     const server = $(this).attr('data-type');
 
+    $(this).button('loading');
     startServer(server);
   };
 
@@ -130,7 +173,6 @@ const urlHelper = new UrlHelper(location);
       attachEvent();
       getSidebarItem();
       initAceEditor();
-      $('[data-toggle="tooltip"]').tooltip();
     });
   };
 
@@ -199,10 +241,15 @@ const urlHelper = new UrlHelper(location);
       },
       dataType: 'json',
       success: function (data) {
-
-      },
-      error: function (data) {
-
+        if (data.message === 'ok') {
+          checkServerStatus({
+            onComplete: function (data) {
+              renderDashBoard(data);
+            }
+          });
+        } else {
+          layer.msg('启动失败', {icon: 5});
+        }
       }
     });
   };
@@ -220,12 +267,49 @@ const urlHelper = new UrlHelper(location);
       },
       dataType: 'json',
       success: function (data) {
-
+        let serverStatus = {};
+        if (server === 'dev') {
+          serverStatus.devServer = 0
+        }
+        if (server === 'mock') {
+          serverStatus.mockServer = 0
+        }
+        if (data.message === 'ok') {
+          renderDashBoard(serverStatus);
+        } else {
+          layer.msg('停止失败', {icon: 5});
+        }
       },
-      error: function (data) {
-
-      }
     });
+  };
+
+  /**
+   * 检查服务状态
+   */
+  checkServerStatus = function (options) {
+    setTimeout(function () {
+      stateMap.loading = true;
+      $.ajax({
+        url: '/console_board/serverStatus',
+        type: 'post',
+        dataType: 'json',
+        success: function (data) {
+          stateMap.loading = false;
+
+          if (data.devServer === 0) {
+            if (stateMap.loading) {
+              return false;
+            }
+            checkServerStatus(options);
+          } else {
+            options.onComplete && options.onComplete(data);
+          }
+        },
+        complete: function () {
+          stateMap.loading = false;
+        }
+      });
+    }, 500);
   };
   /*------------------------------- END PUBLIC ----------------------------------*/
 
