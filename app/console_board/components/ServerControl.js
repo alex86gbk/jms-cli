@@ -35,37 +35,34 @@ function serverStatus(projectPath) {
 }
 
 /**
- * 服务启动
+ * 服务启动 TODO 查询端口是否被占用，被占用先fkill
  * @param {Object} req
  * @param {Object} res
  * @param {String} projectPath
  */
 function serverStart(req, res, projectPath) {
   const server = req.body.server;
-  const devCommand = `cd ${path.resolve(projectPath)} && npm run local`;
-  const mockCommand = `node ${path.resolve(projectPath, 'mock', 'service.js')}`;
+  const devCommand = `cd ${path.resolve(projectPath)} && npm run local:cli`;
+  const mockCommand = `cd ${path.resolve(projectPath)} && npm run mock:cli`;
 
   if (server === 'dev') {
-    exec(devCommand, (error) => {
-      if (error) {
-        console.log(error);
-      }
+    exec(devCommand).on('exit', function () {
+      console.log('dev stop');
     });
   }
   if (server === 'mock') {
-    exec(mockCommand, (error) => {
-      if (error) {
-        console.log(error);
-      }
+    exec(mockCommand).on('exit', function () {
+      console.log('mock stop');
     });
   }
+
   res.send({
     'message': 'ok'
   });
 }
 
 /**
- * 服务停止
+ * 服务停止 TODO 更好的方式结束在运行的进程
  * @param {Object} req
  * @param {Object} res
  * @param {String} projectPath
@@ -93,10 +90,12 @@ function serverStop(req, res, projectPath) {
     if (server === 'dev' && devServerStatus !== 0) {
       let stats = fs.statSync(devPid);
 
-      process.kill(devServerStatus);
-
-      if (stats.isFile()) {
-        fs.unlinkSync(devPid);
+      try {
+        process.kill(devServerStatus);
+      } catch (err) {
+        if (stats.isFile()) {
+          fs.unlinkSync(devPid);
+        }
       }
 
       res.send({
@@ -106,11 +105,14 @@ function serverStop(req, res, projectPath) {
     if (server === 'mock' && mockServerStatus !== 0) {
       let stats = fs.statSync(mockPid);
 
-      process.kill(mockServerStatus);
-
-      if (stats.isFile()) {
-        fs.unlinkSync(mockPid);
+      try {
+        process.kill(mockServerStatus);
+      } catch (err) {
+        if (stats.isFile()) {
+          fs.unlinkSync(mockPid);
+        }
       }
+
       res.send({
         'message': 'ok'
       });

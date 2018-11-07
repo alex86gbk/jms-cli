@@ -42,41 +42,46 @@ const urlHelper = new UrlHelper(location);
 
   /**
    * 渲染仪表盘
+   * @param {String} server
    * @param {Object} serverStatus
    */
-  renderDashBoard = function (serverStatus) {
-    if (serverStatus.devServer === 0 || serverStatus.devServer) {
-      if (serverStatus.devServer !== 0) {
-        domMap.$projectDashboard.find('.list-group-item').eq(0).html(
-          '<span>前端服务状态</span>'+
-          '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
-          '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
-          '<span class="badge list-group-item-success">运行中</span>'
-        );
-      } else {
-        domMap.$projectDashboard.find('.list-group-item').eq(0).html(
-          '<span>前端服务状态</span>'+
-          '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-          '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
-          '<span class="badge list-group-item-danger">未开启</span>'
-        );
+  renderDashBoard = function (server, serverStatus) {
+    if (server === 'dev') {
+      if (serverStatus.devServer === 0 || serverStatus.devServer) {
+        if (serverStatus.devServer !== 0) {
+          domMap.$projectDashboard.find('.list-group-item').eq(0).html(
+            '<span>前端服务状态</span>'+
+            '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
+            '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
+            '<span class="badge list-group-item-success">运行中</span>'
+          );
+        } else {
+          domMap.$projectDashboard.find('.list-group-item').eq(0).html(
+            '<span>前端服务状态</span>'+
+            '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+            '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+            '<span class="badge list-group-item-danger">未开启</span>'
+          );
+        }
       }
     }
-    if (serverStatus.mockServer === 0 || serverStatus.mockServer) {
-      if (serverStatus.mockServer !== 0) {
-        domMap.$projectDashboard.find('.list-group-item').eq(1).html(
-          '<span>Mock 数据服务状态</span>'+
-          '<button type="button" data-type="dev" disabled="" class="btn btn-success btn-xs">开启</button>'+
-          '<button type="button" data-type="dev" class="btn btn-danger btn-xs">停止</button>'+
-          '<span class="badge list-group-item-success">运行中</span>'
-        );
-      } else {
-        domMap.$projectDashboard.find('.list-group-item').eq(1).html(
-          '<span>Mock 数据服务状态</span>'+
-          '<button type="button" data-type="dev" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-          '<button type="button" data-type="dev" disabled="" class="btn btn-danger btn-xs">停止</button>'+
-          '<span class="badge list-group-item-danger">未开启</span>'
-        );
+    if (server === 'mock') {
+      if (serverStatus.mockServer === 0 || serverStatus.devServer) {
+        if (serverStatus.mockServer !== 0) {
+          domMap.$projectDashboard.find('.list-group-item').eq(1).html(
+            '<span>Mock 数据服务状态</span>'+
+            '<button type="button" data-type="mock" disabled="" class="btn btn-success btn-xs">开启</button>'+
+            '<button type="button" data-type="mock" class="btn btn-danger btn-xs">停止</button>'+
+            '<span class="badge list-group-item-success">运行中</span>'
+          );
+        } else {
+          domMap.$projectDashboard.find('.list-group-item').eq(1).html(
+            '<span>Mock 数据服务状态</span>'+
+            '<button type="button" data-type="mock" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
+            '<button type="button" data-type="mock" disabled="" class="btn btn-danger btn-xs">停止</button>'+
+            '<span class="badge list-group-item-danger">未开启</span>'
+          );
+        }
       }
     }
   };
@@ -242,9 +247,9 @@ const urlHelper = new UrlHelper(location);
       dataType: 'json',
       success: function (data) {
         if (data.message === 'ok') {
-          checkServerStatus({
+          checkServerStatus(server, {
             onComplete: function (data) {
-              renderDashBoard(data);
+              renderDashBoard(server, data);
             }
           });
         } else {
@@ -268,14 +273,11 @@ const urlHelper = new UrlHelper(location);
       dataType: 'json',
       success: function (data) {
         let serverStatus = {};
-        if (server === 'dev') {
-          serverStatus.devServer = 0
-        }
-        if (server === 'mock') {
-          serverStatus.mockServer = 0
-        }
+
+        serverStatus[server + 'Server'] = 0;
+
         if (data.message === 'ok') {
-          renderDashBoard(serverStatus);
+          renderDashBoard(server, serverStatus);
         } else {
           layer.msg('停止失败', {icon: 5});
         }
@@ -286,27 +288,28 @@ const urlHelper = new UrlHelper(location);
   /**
    * 检查服务状态
    */
-  checkServerStatus = function (options) {
+  checkServerStatus = function (server, options) {
+    let loading = false;
+
     setTimeout(function () {
-      stateMap.loading = true;
+      loading = true;
       $.ajax({
         url: '/console_board/serverStatus',
         type: 'post',
         dataType: 'json',
         success: function (data) {
-          stateMap.loading = false;
-
-          if (data.devServer === 0) {
-            if (stateMap.loading) {
+          loading = false;
+          if (data[server + 'Server'] === 0) {
+            if (loading) {
               return false;
             }
-            checkServerStatus(options);
+            checkServerStatus(server, options);
           } else {
             options.onComplete && options.onComplete(data);
           }
         },
         complete: function () {
-          stateMap.loading = false;
+          loading = false;
         }
       });
     }, 500);
