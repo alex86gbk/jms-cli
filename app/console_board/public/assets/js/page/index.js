@@ -12,10 +12,10 @@ const urlHelper = new UrlHelper(location);
   /*************** dom method *******************/
   let setDomMap, renderDOM, renderDashBoard;
   /*************** event method *******************/
-  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickStartServer
-    , onClickStopServer;
+  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
+    , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, initAceEditor, startServer, stopServer
+  let init, getSidebarItem, activeSidebarItem, initAceEditor, saveSetting, startServer, stopServer
     , checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
@@ -28,6 +28,7 @@ const urlHelper = new UrlHelper(location);
       $body: $('body'),
       $navBar: $('#navBar'),
       $sidebar: $('#sidebar'),
+      $saveSetting: $('#save_setting'),
       $projectDashboard: $('#project_dashboard').next(),
     };
   };
@@ -94,6 +95,7 @@ const urlHelper = new UrlHelper(location);
   attachEvent = function () {
     domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
+    domMap.$saveSetting.on('click', onClickSaveSetting);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
@@ -119,6 +121,22 @@ const urlHelper = new UrlHelper(location);
 
     $that.siblings().removeClass('active');
     $that.addClass('active');
+  };
+
+  /**
+   * 点击保存设置
+   */
+  onClickSaveSetting = function (event) {
+    const setting = {
+      devServerPort: $('#dev_server_port').val(),
+      mockServerPort: $('#mock_server_port').val(),
+      proxyPath: $('#proxy_path').val(),
+      mockYAPI: $('#mock_YAPI').val(),
+      publicPath: $('#public_path').val(),
+    };
+
+    saveSetting(setting);
+    event.preventDefault();
   };
 
   /**
@@ -234,6 +252,27 @@ const urlHelper = new UrlHelper(location);
   };
 
   /**
+   * 保存设置
+   */
+  saveSetting = function (setting) {
+    $.ajax({
+      url: '/console_board/setSetting',
+      type: 'post',
+      data: {
+        setting: JSON.stringify(setting)
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.message === 'ok') {
+
+        } else {
+          layer.msg('保存失败', {icon: 5});
+        }
+      }
+    });
+  };
+
+  /**
    * 开启服务
    * @param {String} server
    */
@@ -294,7 +333,7 @@ const urlHelper = new UrlHelper(location);
     setTimeout(function () {
       loading = true;
       $.ajax({
-        url: '/console_board/serverStatus',
+        url: '/console_board/getServerStatus',
         type: 'post',
         dataType: 'json',
         success: function (data) {

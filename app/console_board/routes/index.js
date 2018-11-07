@@ -5,12 +5,13 @@ const co = require('co');
 
 const init = require('../../../src/init');
 const serverControl = require('../components/ServerControl');
+const setting = require('../components/Setting');
 const settableVersion = '0.1.1';
 
 let currentProject;
 
 /**
- * 获取 js-multi-seed 版本
+ * 获取 JMS 版本
  * @param path 项目路径
  */
 function getJMSVersion(path) {
@@ -54,6 +55,15 @@ function getServiceAPI(req, res) {
 }
 
 /**
+ * 保存项目设置
+ * @param req
+ * @param res
+ */
+function setSetting(req, res) {
+  setting.setSetting(req, res, currentProject);
+}
+
+/**
  * 开启服务
  * @param req
  * @param res
@@ -76,8 +86,8 @@ function stopServer(req, res) {
  * @param req
  * @param res
  */
-function serverStatus(req, res) {
-  res.send(serverControl.serverStatus(currentProject));
+function getServerStatus(req, res) {
+  res.send(serverControl.getServerStatus(currentProject));
 }
 
 /**
@@ -96,19 +106,20 @@ function renderDefaultView(req, res) {
 
     let projects = yield db.queryDataSync(projectDB);
     projects = projects.map((item) => {
-      return item.path
+      return item.path;
     });
     currentProject = currentProject ? currentProject : projects[0];
 
     let JMSVersion = yield getJMSVersion(currentProject);
+    const settableProject = JMSVersion >= settableVersion;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
       JMSVersion: JMSVersion,
-      settableProject: JMSVersion >= settableVersion,
       settableVersion: settableVersion,
-      serverStatus: serverControl.serverStatus(currentProject),
+      setting: settableProject ? setting.getSetting(currentProject) : null,
+      serverStatus: settableProject ? serverControl.getServerStatus(currentProject) : null,
     });
   });
 }
@@ -120,6 +131,7 @@ router.post('/getProjectCategory', getProjectCategory);
 router.post('/getServiceAPI', getServiceAPI);
 router.post('/startServer', startServer);
 router.post('/stopServer', stopServer);
-router.post('/serverStatus', serverStatus);
+router.post('/setSetting', setSetting);
+router.post('/getServerStatus', getServerStatus);
 
 module.exports = router;

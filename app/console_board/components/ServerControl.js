@@ -10,7 +10,7 @@ const fkill = require('fkill');
  * @param {String} projectPath
  * @return {Object}
  */
-function serverStatus(projectPath) {
+function getServerStatus(projectPath) {
   const devPid = path.resolve(projectPath, 'config', 'dev-server.pid');
   const mockPid = path.resolve(projectPath, 'config', 'mock-server.pid');
   let devServerStatus;
@@ -127,7 +127,7 @@ function serverStop(req, res, projectPath) {
 }
 
 module.exports = {
-  serverStatus,
+  getServerStatus,
   serverStart,
   serverStop,
 };
