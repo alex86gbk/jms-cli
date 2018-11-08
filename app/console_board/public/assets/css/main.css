@@ -8,6 +8,14 @@ body {
   padding-top: 50px;
 }
 
+.block-10 {
+  height: 10px;
+  clear: both;
+}
+
+input + label {
+  margin-top: 5px;
+}
 
 /*
  * Global add-ons
@@ -78,7 +86,7 @@ body {
   margin-left: 150px;
 }
 .main .page-header {
-  margin-top: 0;
+  margin-top: 10px;
 }
 .main .btn {
   margin: 0 5px;
@@ -140,6 +148,13 @@ body {
 .setting .form-control[type="text"] {
   text-align: center;
   font-weight: bold;
+  color: #31708f;
+  -webkit-box-shadow:inset 0 5px 5px rgba(0,0,0,.075);
+  box-shadow: inset 0 5px 5px rgba(0,0,0,.075);
+}
+.setting .form-control[type="text"].error,
+label.error {
+  color: #c7254e;
 }
 .mock {
   width: 600px;

@@ -5,6 +5,7 @@ const path = require('path');
  * 获取设置
  */
 function getSetting(path) {
+  delete require.cache[require.resolve(`${path}/.projectrc.js`)];
   const setting = require(`${path}/.projectrc.js`);
 
   return {
@@ -35,6 +36,10 @@ function setSetting(req, res, projectPath) {
     },
     "publicPath": data.publicPath.replace(/^\//, '').split('/')
   };
+
+  if (setting["publicPath"][0] === '') {
+    setting["publicPath"] = [];
+  }
 
   try {
     fs.writeFileSync(path.resolve(projectPath, '.projectrc.js'), `module.exports = ${JSON.stringify(setting, null, 2)};`);

@@ -8,14 +8,14 @@ const urlHelper = new UrlHelper(location);
     loading: null,
   };
   let domMap = {};
-  let sidebarItems = [];
+  let sidebarItems = [], validateSettingForm;
   /*************** dom method *******************/
   let setDomMap, renderDOM, renderDashBoard;
   /*************** event method *******************/
   let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, initAceEditor, saveSetting, startServer, stopServer
+  let init, getSidebarItem, activeSidebarItem, initAceEditor, initValidate, saveSetting, startServer, stopServer
     , checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
@@ -28,7 +28,7 @@ const urlHelper = new UrlHelper(location);
       $body: $('body'),
       $navBar: $('#navBar'),
       $sidebar: $('#sidebar'),
-      $saveSetting: $('#save_setting'),
+      $settingForm: $('#setting_form'),
       $projectDashboard: $('#project_dashboard').next(),
     };
   };
@@ -95,7 +95,7 @@ const urlHelper = new UrlHelper(location);
   attachEvent = function () {
     domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
-    domMap.$saveSetting.on('click', onClickSaveSetting);
+    domMap.$settingForm.on('click', 'button[type="submit"]', onClickSaveSetting);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
@@ -127,6 +127,10 @@ const urlHelper = new UrlHelper(location);
    * 点击保存设置
    */
   onClickSaveSetting = function (event) {
+    if (!validateSettingForm.form()) {
+      return false;
+    }
+
     const setting = {
       devServerPort: $('#dev_server_port').val(),
       mockServerPort: $('#mock_server_port').val(),
@@ -134,8 +138,13 @@ const urlHelper = new UrlHelper(location);
       mockYAPI: $('#mock_YAPI').val(),
       publicPath: $('#public_path').val(),
     };
+    const $btn = $(this).button('loading');
 
-    saveSetting(setting);
+    saveSetting(setting, {
+      onComplete: function () {
+        $btn.button('reset');
+      }
+    });
     event.preventDefault();
   };
 
@@ -196,6 +205,7 @@ const urlHelper = new UrlHelper(location);
       attachEvent();
       getSidebarItem();
       initAceEditor();
+      initValidate();
     });
   };
 
@@ -252,9 +262,79 @@ const urlHelper = new UrlHelper(location);
   };
 
   /**
+   * 初始化表单验证
+   */
+  initValidate = function () {
+    validateSettingForm = domMap.$settingForm.validate({
+      rules: {
+        dev_server_port: {
+          required: true,
+          digits: true,
+          notEqualTo: "#mock_server_port",
+          minlength: 4,
+          maxlength: 5,
+        },
+        mock_server_port: {
+          required: true,
+          digits: true,
+          notEqualTo: "#dev_server_port",
+          minlength: 4,
+          maxlength: 5,
+        },
+        proxy_path: {
+          required: true,
+          checkPath: true,
+        },
+        mock_YAPI: {
+          checkURL: true,
+        },
+        public_path: {
+          required: true,
+          checkPath: true,
+        },
+      },
+      messages: {
+        dev_server_port: {
+          required: "请输入用户名",
+          notEqualTo: "前端端口不能 与 Mock 端口相同",
+          minlength: "端口不能小于4位",
+          maxlength: "端口不能大于5位",
+        },
+        mock_server_port: {
+          required: "请输入密码",
+          notEqualTo: "Mock 端口不能 与 前端端口相同",
+          minlength: "端口不能小于4位",
+          maxlength: "端口不能大于5位",
+        },
+        proxy_path: {
+          required: "请输入反向代理路径",
+          checkPath: "请输入有效的反向代理路径",
+        },
+        mock_YAPI: {
+          checkURL: "请输入有效的 YAPI 地址",
+        },
+        public_path: {
+          required: "请输入发布路径",
+          checkPath: "请输入有效的发布路径",
+        },
+      }
+    });
+
+    $.validator.addMethod("checkURL", function (value, element, params) {
+      let regURL = /[a-zA-z]+:\/\/[^\s]*/;
+      return this.optional(element) || (regURL.test(value));
+    }, "请输入有效的 URL！");
+
+    $.validator.addMethod("checkPath", function (value, element, params) {
+      let checkPath = /^\/$|^\/[a-zA-z]+[^\s]*$/;
+      return this.optional(element) || (checkPath.test(value));
+    }, "请输入有效的路径！");
+  };
+
+  /**
    * 保存设置
    */
-  saveSetting = function (setting) {
+  saveSetting = function (setting, options) {
     $.ajax({
       url: '/console_board/setSetting',
       type: 'post',
@@ -264,10 +344,13 @@ const urlHelper = new UrlHelper(location);
       dataType: 'json',
       success: function (data) {
         if (data.message === 'ok') {
-
+          layer.msg('设置成功', {icon: 6});
         } else {
           layer.msg('保存失败', {icon: 5});
         }
+      },
+      complete: function () {
+        options.onComplete && options.onComplete();
       }
     });
   };
