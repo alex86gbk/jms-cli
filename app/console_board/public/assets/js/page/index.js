@@ -6,6 +6,7 @@ const urlHelper = new UrlHelper(location);
   let configMap = {};
   let stateMap = {
     loading: null,
+    pageMapData: null,
   };
   let domMap = {};
   let sidebarItems = [], validateSettingForm;
@@ -15,8 +16,8 @@ const urlHelper = new UrlHelper(location);
   let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, initAceEditor, initValidate, saveSetting, startServer, stopServer
-    , checkServerStatus;
+  let init, getSidebarItem, activeSidebarItem, getPageMap, initPageMapTable, initAceEditor, initValidate
+    , saveSetting, startServer, stopServer, checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
   /*------------------------------- DOM ----------------------------------*/
@@ -204,6 +205,7 @@ const urlHelper = new UrlHelper(location);
       setDomMap();
       attachEvent();
       getSidebarItem();
+      getPageMap().then(initPageMapTable);
       initAceEditor();
       initValidate();
     });
@@ -240,6 +242,57 @@ const urlHelper = new UrlHelper(location);
           $(this).addClass('active');
         }
       }
+    });
+  };
+
+  /**
+   * 获取项目地图
+   */
+  getPageMap = function () {
+    return $.ajax({
+      url: '/console_board/getPageMap',
+      type: 'post',
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        if (data.message === 'ok') {
+          stateMap.pageMapData = data.data;
+        } else {
+          layer.msg('获取项目地图失败', {icon: 5});
+        }
+      }
+    });
+  };
+
+  /**
+   * 初始化项目地图表格
+   */
+  initPageMapTable = function () {
+    /**
+     * 格式化链接字段
+     * @param value
+     */
+    function formatLinkField(value) {
+      return `<a href="${value}" target="_blank">${value}</a>`;
+    }
+
+    $('#page_map_table').bootstrapTable({
+      striped: true,
+      pagination: true,
+      pageSize: 10,
+      pageNumber: 1,
+      pageList: [10, 20, 50],
+      sidePagination: 'client',
+      search: true,
+      searchTimeOut: 100,
+      columns: [
+        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true'},
+        {field: 'filePath', title: '详细', align: 'left', valign: 'top', sortable: 'true'},
+        {field: 'param', title: '参数', align: 'left', valign: 'top', sortable: 'true'},
+        {field: 'link', title: '查看', align: 'left', valign: 'top', sortable: 'true', formatter: formatLinkField},
+      ],
+      showColumns: true,
+      data: stateMap.pageMapData,
     });
   };
 

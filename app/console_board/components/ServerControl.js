@@ -36,12 +36,11 @@ function getServerStatus(projectPath) {
 
 /**
  * 服务启动 TODO 查询端口是否被占用，被占用先fkill
- * @param {Object} req
- * @param {Object} res
  * @param {String} projectPath
+ * @param {String} projectServer
  */
-function serverStart(req, res, projectPath) {
-  const server = req.body.server;
+async function startServer(projectPath, projectServer) {
+  const server = projectServer;
   const devCommand = `cd ${path.resolve(projectPath)} && npm run dev-server`;
   const mockCommand = `cd ${path.resolve(projectPath)} && npm run mock-server`;
 
@@ -56,19 +55,16 @@ function serverStart(req, res, projectPath) {
     });
   }
 
-  res.send({
-    'message': 'ok'
-  });
+  return Promise.resolve();
 }
 
 /**
  * 服务停止 TODO 更好的方式结束在运行的进程
- * @param {Object} req
- * @param {Object} res
  * @param {String} projectPath
+ * @param {String} projectServer
  */
-function serverStop(req, res, projectPath) {
-  const server = req.body.server;
+async function stopServer(projectPath, projectServer) {
+  const server = projectServer;
   const devPid = path.resolve(projectPath, 'config', 'dev-server.pid');
   const mockPid = path.resolve(projectPath, 'config', 'mock-server.pid');
   let devServerStatus;
@@ -86,48 +82,42 @@ function serverStop(req, res, projectPath) {
     mockServerStatus = 0;
   }
 
-  co(function * stop() {
-    if (server === 'dev-server' && devServerStatus !== 0) {
-      let stats = fs.statSync(devPid);
+  if (server === 'dev-server' && devServerStatus !== 0) {
+    let stats = fs.statSync(devPid);
 
-      try {
-        process.kill(devServerStatus);
-        if (stats.isFile()) {
-          fs.unlinkSync(devPid);
-        }
-      } catch (err) {
-        if (stats.isFile()) {
-          fs.unlinkSync(devPid);
-        }
+    try {
+      process.kill(devServerStatus);
+      if (stats.isFile()) {
+        fs.unlinkSync(devPid);
       }
-
-      res.send({
-        'message': 'ok'
-      });
-    }
-    if (server === 'mock-server' && mockServerStatus !== 0) {
-      let stats = fs.statSync(mockPid);
-
-      try {
-        process.kill(mockServerStatus);
-        if (stats.isFile()) {
-          fs.unlinkSync(mockPid);
-        }
-      } catch (err) {
-        if (stats.isFile()) {
-          fs.unlinkSync(mockPid);
-        }
+    } catch (err) {
+      if (stats.isFile()) {
+        fs.unlinkSync(devPid);
       }
-
-      res.send({
-        'message': 'ok'
-      });
     }
-  });
+
+    return Promise.resolve();
+  }
+  if (server === 'mock-server' && mockServerStatus !== 0) {
+    let stats = fs.statSync(mockPid);
+
+    try {
+      process.kill(mockServerStatus);
+      if (stats.isFile()) {
+        fs.unlinkSync(mockPid);
+      }
+    } catch (err) {
+      if (stats.isFile()) {
+        fs.unlinkSync(mockPid);
+      }
+    }
+
+    return Promise.resolve();
+  }
 }
 
 module.exports = {
   getServerStatus,
-  serverStart,
-  serverStop,
+  startServer,
+  stopServer,
 };

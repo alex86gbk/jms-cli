@@ -4,11 +4,34 @@ const router = express.Router();
 const co = require('co');
 
 const init = require('../../../src/init');
+const pageMap = require('../components/PageMap');
 const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 const settableVersion = '0.1.1';
 
+let projects;
 let currentProject;
+
+/**
+ * 获取当前项目
+ */
+function getCurrentProject(req, res, next) {
+  currentProject = req.query.project;
+
+  co(function *() {
+    const appPath = yield init.initAppPath();
+    const dbPath = yield init.initDBPath(appPath);
+    const db = require('../../../src/db');
+    const projectDB = db.loadDBFiles(dbPath).project;
+
+    projects = yield db.queryDataSync(projectDB);
+    projects = projects.map((item) => {
+      return item.path;
+    });
+    currentProject = currentProject ? currentProject : projects[0];
+    next();
+  });
+}
 
 /**
  * 获取 JMS 版本
@@ -32,8 +55,13 @@ function getJMSVersion(path) {
  * @param req
  * @param res
  */
-function getProjectMap(req, res) {
-
+function getPageMap(req, res) {
+  pageMap.getPageMap(currentProject).then((data) => {
+    res.send({
+      'message': 'ok',
+      'data': data
+    });
+  });
 }
 
 /**
@@ -60,7 +88,15 @@ function getServiceAPI(req, res) {
  * @param res
  */
 function setSetting(req, res) {
-  setting.setSetting(req, res, currentProject);
+  setting.setSetting(currentProject, req.body.setting).then(() => {
+    res.send({
+      'message': 'ok',
+    });
+  }, () => {
+    res.send({
+      'message': 'fail',
+    });
+  });
 }
 
 /**
@@ -69,7 +105,11 @@ function setSetting(req, res) {
  * @param res
  */
 function startServer(req, res) {
-  serverControl.serverStart(req, res, currentProject);
+  serverControl.startServer(currentProject, req.body.server).then(() => {
+    res.send({
+      'message': 'ok',
+    });
+  });
 }
 
 /**
@@ -78,7 +118,11 @@ function startServer(req, res) {
  * @param res
  */
 function stopServer(req, res) {
-  serverControl.serverStop(req, res, currentProject);
+  serverControl.stopServer(currentProject, req.body.server).then(() => {
+    res.send({
+      'message': 'ok',
+    });
+  });
 }
 
 /**
@@ -96,20 +140,7 @@ function getServerStatus(req, res) {
  * @param res
  */
 function renderDefaultView(req, res) {
-  currentProject = req.query.project;
-
   co(function *() {
-    const appPath = yield init.initAppPath();
-    const dbPath = yield init.initDBPath(appPath);
-    const db = require('../../../src/db');
-    const projectDB = db.loadDBFiles(dbPath).project;
-
-    let projects = yield db.queryDataSync(projectDB);
-    projects = projects.map((item) => {
-      return item.path;
-    });
-    currentProject = currentProject ? currentProject : projects[0];
-
     let JMSVersion = yield getJMSVersion(currentProject);
     const settableProject = JMSVersion >= settableVersion;
 
@@ -124,9 +155,10 @@ function renderDefaultView(req, res) {
   });
 }
 
+router.get('/', getCurrentProject);
 router.get('/', renderDefaultView);
 
-router.post('/getProjectMap', getProjectMap);
+router.post('/getPageMap', getPageMap);
 router.post('/getProjectCategory', getProjectCategory);
 router.post('/getServiceAPI', getServiceAPI);
 router.post('/startServer', startServer);

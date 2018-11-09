@@ -3,10 +3,26 @@ const path = require('path');
 
 /**
  * 获取设置
+ * @param {String} projectPath
  */
-function getSetting(path) {
-  delete require.cache[require.resolve(`${path}/.projectrc.js`)];
-  const setting = require(`${path}/.projectrc.js`);
+function getSetting(projectPath) {
+  let setting;
+  try {
+    delete require.cache[require.resolve(`${projectPath}/.projectrc.js`)];
+    setting = require(`${projectPath}/.projectrc.js`);
+  } catch (err) {
+    setting = {
+      dev: {
+        port: 8080
+      },
+      mock: {
+        port: 3000,
+        proxyPath: '/api',
+        YAPI: '',
+      },
+      publicPath: []
+    };
+  }
 
   return {
     devServerPort: setting.dev.port,
@@ -19,12 +35,11 @@ function getSetting(path) {
 
 /**
  * 保存设置
- * @param {Object} req
- * @param {Object} res
  * @param {String} projectPath
+ * @param {String} projectSetting
  */
-function setSetting(req, res, projectPath) {
-  const data = JSON.parse(req.body.setting);
+async function setSetting(projectPath, projectSetting) {
+  const data = JSON.parse(projectSetting);
   const setting = {
     "mock": {
       "port": parseInt(data.mockServerPort),
@@ -43,13 +58,10 @@ function setSetting(req, res, projectPath) {
 
   try {
     fs.writeFileSync(path.resolve(projectPath, '.projectrc.js'), `module.exports = ${JSON.stringify(setting, null, 2)};`);
-    res.send({
-      'message': 'ok'
-    });
+
+    return Promise.resolve();
   } catch (err) {
-    res.send({
-      'message': 'fail'
-    });
+    return Promise.reject();
   }
 }
 
