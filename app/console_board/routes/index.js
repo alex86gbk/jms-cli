@@ -5,6 +5,7 @@ const co = require('co');
 
 const init = require('../../../src/init');
 const pageMap = require('../components/PageMap');
+const category = require('../components/Category');
 const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 const settableVersion = '0.1.1';
@@ -70,7 +71,12 @@ function getPageMap(req, res) {
  * @param res
  */
 function getProjectCategory(req, res) {
-
+  category.getCategory(currentProject).then((data) => {
+    res.send({
+      'message': 'ok',
+      'data': data
+    });
+  });
 }
 
 /**

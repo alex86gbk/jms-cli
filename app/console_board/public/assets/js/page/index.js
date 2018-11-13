@@ -7,6 +7,7 @@ const urlHelper = new UrlHelper(location);
   let stateMap = {
     loading: null,
     pageMapData: null,
+    categoryData: null,
   };
   let domMap = {};
   let sidebarItems = [], validateSettingForm;
@@ -16,7 +17,8 @@ const urlHelper = new UrlHelper(location);
   let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, getPageMap, initPageMapTable, initAceEditor, initValidate
+  let init, getSidebarItem, activeSidebarItem, getPageMap, getCategory, initPageMapTable, initCategoryTable
+    , initAceEditor, initValidate
     , saveSetting, startServer, stopServer, checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
@@ -206,6 +208,7 @@ const urlHelper = new UrlHelper(location);
       attachEvent();
       getSidebarItem();
       getPageMap().then(initPageMapTable);
+      getCategory().then(initCategoryTable);
       initAceEditor();
       initValidate();
     });
@@ -265,6 +268,25 @@ const urlHelper = new UrlHelper(location);
   };
 
   /**
+   * 获取分类
+   */
+  getCategory = function () {
+    return $.ajax({
+      url: '/console_board/getProjectCategory',
+      type: 'post',
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        if (data.message === 'ok') {
+          stateMap.categoryData = data.data;
+        } else {
+          layer.msg('获取分类失败', {icon: 5});
+        }
+      }
+    });
+  };
+
+  /**
    * 初始化项目地图表格
    */
   initPageMapTable = function () {
@@ -286,13 +308,53 @@ const urlHelper = new UrlHelper(location);
       search: true,
       searchTimeOut: 100,
       columns: [
-        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true'},
+        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true', width: 120},
         {field: 'filePath', title: '详细', align: 'left', valign: 'top', sortable: 'true'},
         {field: 'param', title: '参数', align: 'left', valign: 'top', sortable: 'true'},
         {field: 'link', title: '查看', align: 'left', valign: 'top', sortable: 'true', formatter: formatLinkField},
       ],
       showColumns: true,
       data: stateMap.pageMapData,
+    });
+  };
+
+  /**
+   * 初始化项目分类表格
+   */
+  initCategoryTable = function () {
+    /**
+     * 格式化接口字段
+     * @param value
+     */
+    function formatItemField(value) {
+      let str = '<ol class="breadcrumb">';
+
+      for (let i = 0; i < value.length; i++ ) {
+        str += '<li class="active">' + value[i] + '</li>';
+      }
+
+      str += '</ol>';
+
+      return str;
+    }
+
+    $('#category_table').bootstrapTable({
+      striped: true,
+      pagination: true,
+      pageSize: 10,
+      pageNumber: 1,
+      pageList: [10, 20, 50],
+      sidePagination: 'client',
+      search: true,
+      searchTimeOut: 100,
+      columns: [
+        {field: 'title', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: 120},
+        {field: 'filePath', title: 'Service 模块', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'mockFilePath', title: 'Mock 数据模块', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'item', title: '包含接口', align: 'left', valign: 'middle', sortable: 'true', formatter: formatItemField},
+      ],
+      showColumns: true,
+      data: stateMap.categoryData,
     });
   };
 

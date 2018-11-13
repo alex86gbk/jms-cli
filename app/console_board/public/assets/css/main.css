@@ -141,6 +141,10 @@ input + label {
   padding: 20px;
   font-size: 20px;
 }
+.category .breadcrumb {
+  background-color: transparent;
+  margin-bottom: 0;
+}
 .setting .input-group-addon:first-child {
   border-right: 1px solid #ccc;
   border-top-right-radius: 4px;

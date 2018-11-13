@@ -58,6 +58,7 @@ function generatePageMap(projectPath, root, fileStats) {
 /**
  * 获取项目地图
  * @param {String} projectPath
+ * @return {Promise.<void>}
  */
 async function getPageMap(projectPath) {
   const walkerOptions = {
@@ -84,7 +85,6 @@ async function getPageMap(projectPath) {
 
   return new Promise((resolve) => {
     walker.on('end', function () {
-      console.log('Get page map done!');
       resolve(pageMap);
     });
   });

@@ -1,39 +1,4 @@
-h3(class="page-header" id="project_category")
-  | 分类
-div(class="table-responsive")
-  table(class="table table-striped")
-    thead
-      tr
-        th(width="120") 名称
-        th Services 模块
-        th Mock 数据模块
-        th(width="600") 包含接口（只读）
-    tbody
-      tr
-        td common
-        td /src/onlineExamStudent/commonServices.js
-        td /api/onlineExamStudent/common.js
-        td 用户登录、用户退出、绑定座位号、考生须知、考试信息、获取配置信息、开启考试
-      tr
-        td answer
-        td /src/onlineExamStudent/answerServices.js
-        td /api/onlineExamStudent/answer.js
-        td 获取答题卡信息、获取解析答题卡信息、提交用户作答、提交整卷用户作答、交卷、获取科目考试结果
-      tr
-        td question
-        td /src/onlineExamStudent/questionServices.js
-        td /api/onlineExamStudent/question.js
-        td 获取题目信息、获取整卷题目信息、获取解析题目信息
-  nav(aria-label="..." class="text-center")
-    ul(class="pagination")
-      li(class="disabled")
-        a(href="#" aria-label="Previous")
-          span(aria-hidden="true")
-          | &laquo;
-      li(class="active")
-        a(href="#")
-          | 1
-      li(class="disabled")
-        a(href="#" aria-label="Next")
-          span(aria-hidden="true")
-          | &raquo;
+div(class="table-responsive category" id="project_category")
+  h3(class="page-header")
+    | 分类
+  table(class="table table-bordered table-striped" id="category_table")
