@@ -6,12 +6,15 @@ const co = require('co');
 const init = require('../../../src/init');
 const pageMap = require('../components/PageMap');
 const category = require('../components/Category');
+const serviceApi = require('../components/ServiceApi');
 const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
-const settableVersion = '0.1.1';
+
+global.settableVersion = '0.1.1';
 
 let projects;
 let currentProject;
+let JMSVersion;
 
 /**
  * 获取当前项目
@@ -45,7 +48,8 @@ function getJMSVersion(path) {
         console.log(err);
         resolve(null);
       } else {
-        resolve(require(`${path}/package.json`).version);
+        JMSVersion = require(`${path}/package.json`).version;
+        resolve();
       }
     });
   });
@@ -62,6 +66,10 @@ function getPageMap(req, res) {
       'message': 'ok',
       'data': data
     });
+  }, () => {
+    res.send({
+      'message': 'fail',
+    });
   });
 }
 
@@ -70,11 +78,15 @@ function getPageMap(req, res) {
  * @param req
  * @param res
  */
-function getProjectCategory(req, res) {
+function getCategory(req, res) {
   category.getCategory(currentProject).then((data) => {
     res.send({
       'message': 'ok',
       'data': data
+    });
+  }, () => {
+    res.send({
+      'message': 'fail',
     });
   });
 }
@@ -84,8 +96,17 @@ function getProjectCategory(req, res) {
  * @param req
  * @param res
  */
-function getServiceAPI(req, res) {
-
+function getServiceApi(req, res) {
+  serviceApi.getServiceApi(currentProject).then((data) => {
+    res.send({
+      'message': 'ok',
+      'data': data
+    });
+  }, () => {
+    res.send({
+      'message': 'fail',
+    });
+  });
 }
 
 /**
@@ -147,14 +168,14 @@ function getServerStatus(req, res) {
  */
 function renderDefaultView(req, res) {
   co(function *() {
-    let JMSVersion = yield getJMSVersion(currentProject);
-    const settableProject = JMSVersion >= settableVersion;
+    yield getJMSVersion(currentProject);
+    const settableProject = JMSVersion >= global.settableVersion;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
       JMSVersion: JMSVersion,
-      settableVersion: settableVersion,
+      settableVersion: global.settableVersion,
       setting: settableProject ? setting.getSetting(currentProject) : null,
       serverStatus: settableProject ? serverControl.getServerStatus(currentProject) : null,
     });
@@ -165,8 +186,8 @@ router.get('/', getCurrentProject);
 router.get('/', renderDefaultView);
 
 router.post('/getPageMap', getPageMap);
-router.post('/getProjectCategory', getProjectCategory);
-router.post('/getServiceAPI', getServiceAPI);
+router.post('/getCategory', getCategory);
+router.post('/getServiceApi', getServiceApi);
 router.post('/startServer', startServer);
 router.post('/stopServer', stopServer);
 router.post('/setSetting', setSetting);

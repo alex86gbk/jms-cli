@@ -28,6 +28,7 @@
     "co": "4.6.0",
     "co-prompt": "1.0.0",
     "commander": "2.19.0",
+    "esprima": "4.0.1",
     "express": "4.16.4",
     "express-winston": "2.6.0",
     "extract-comments": "1.0.0",

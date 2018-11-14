@@ -33,8 +33,6 @@
   position: relative;
   clear: both;
   border: none;
-  min-height: 120px;
-  max-height: 400px;
 }
 
 .fixed-table-container.table-no-bordered {

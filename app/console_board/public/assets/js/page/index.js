@@ -8,6 +8,7 @@ const urlHelper = new UrlHelper(location);
     loading: null,
     pageMapData: null,
     categoryData: null,
+    serviceApiData: null,
   };
   let domMap = {};
   let sidebarItems = [], validateSettingForm;
@@ -17,7 +18,8 @@ const urlHelper = new UrlHelper(location);
   let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, getPageMap, getCategory, initPageMapTable, initCategoryTable
+  let init, getSidebarItem, activeSidebarItem, getPageMap, getCategory, getServiceApi
+    , initPageMapTable, initCategoryTable, initServiceApiTable
     , initAceEditor, initValidate
     , saveSetting, startServer, stopServer, checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
@@ -209,7 +211,8 @@ const urlHelper = new UrlHelper(location);
       getSidebarItem();
       getPageMap().then(initPageMapTable);
       getCategory().then(initCategoryTable);
-      initAceEditor();
+      //getServiceApi().then(initServiceApiTable).then(initAceEditor);
+      getServiceApi().then(initServiceApiTable);
       initValidate();
     });
   };
@@ -272,7 +275,7 @@ const urlHelper = new UrlHelper(location);
    */
   getCategory = function () {
     return $.ajax({
-      url: '/console_board/getProjectCategory',
+      url: '/console_board/getCategory',
       type: 'post',
       data: {},
       dataType: 'json',
@@ -281,6 +284,25 @@ const urlHelper = new UrlHelper(location);
           stateMap.categoryData = data.data;
         } else {
           layer.msg('获取分类失败', {icon: 5});
+        }
+      }
+    });
+  };
+
+  /**
+   * 获取接口
+   */
+  getServiceApi = function () {
+    return $.ajax({
+      url: '/console_board/getServiceApi',
+      type: 'post',
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        if (data.message === 'ok') {
+          stateMap.serviceApiData = data.data;
+        } else {
+          layer.msg('获取接口失败', {icon: 5});
         }
       }
     });
@@ -308,10 +330,10 @@ const urlHelper = new UrlHelper(location);
       search: true,
       searchTimeOut: 100,
       columns: [
-        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true', width: 120},
-        {field: 'filePath', title: '详细', align: 'left', valign: 'top', sortable: 'true'},
-        {field: 'param', title: '参数', align: 'left', valign: 'top', sortable: 'true'},
-        {field: 'link', title: '查看', align: 'left', valign: 'top', sortable: 'true', formatter: formatLinkField},
+        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true', width: '15%'},
+        {field: 'filePath', title: '详细', align: 'left', valign: 'top', sortable: 'true', width: '25%'},
+        {field: 'param', title: '参数', align: 'left', valign: 'top', sortable: 'true', width: '25%'},
+        {field: 'link', title: '查看', align: 'left', valign: 'top', sortable: 'true', width: '35%', formatter: formatLinkField},
       ],
       showColumns: true,
       data: stateMap.pageMapData,
@@ -348,14 +370,56 @@ const urlHelper = new UrlHelper(location);
       search: true,
       searchTimeOut: 100,
       columns: [
-        {field: 'title', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: 120},
-        {field: 'filePath', title: 'Service 模块', align: 'left', valign: 'middle', sortable: 'true'},
-        {field: 'mockFilePath', title: 'Mock 数据模块', align: 'left', valign: 'middle', sortable: 'true'},
-        {field: 'item', title: '包含接口', align: 'left', valign: 'middle', sortable: 'true', formatter: formatItemField},
+        {field: 'title', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: '15%'},
+        {field: 'filePath', title: 'Service 模块', align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
+        {field: 'mockFilePath', title: 'Mock 数据模块', align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
+        {field: 'item', title: '包含接口', align: 'left', valign: 'middle', sortable: 'true', width: '35%', formatter: formatItemField},
       ],
       showColumns: true,
       data: stateMap.categoryData,
     });
+  };
+
+  /**
+   * 初始化接口表格
+   */
+  initServiceApiTable = function () {
+    /**
+     * 格式化 mock 字段
+     * @param value
+     */
+    function formatMockField(value) {
+      /*let str = '<pre class="mock"><textarea>';
+
+      str += value;
+      str += '</textarea></pre>';
+
+      return str;*/
+      return '<button type="button" class="btn btn-link" value="' + value + '">查看</button>';
+    }
+
+    $('#service_api_table').bootstrapTable({
+      striped: true,
+      pagination: true,
+      pageSize: 10,
+      pageNumber: 1,
+      pageList: [10, 20, 50],
+      sidePagination: 'client',
+      search: true,
+      searchTimeOut: 100,
+      columns: [
+        {field: 'name', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: 200},
+        {field: 'url', title: '路径', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'method', title: '类型', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'description', title: '描述', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'category', title: '所属分类', align: 'left', valign: 'middle', sortable: 'true'},
+        {field: 'mock', title: 'Mock 数据', align: 'center', valign: 'middle', sortable: 'true', formatter: formatMockField},
+      ],
+      showColumns: true,
+      data: stateMap.serviceApiData,
+    });
+
+    return Promise.resolve();
   };
 
   /**
