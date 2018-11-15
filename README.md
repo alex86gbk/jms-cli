@@ -1,40 +1,40 @@
 # jms-cli
 
-> Standard Tooling for js-multi-seed Development
+> js-multi-seed 标准开发/管理工具
 
-### Getting Started
+### 开始使用
 
-Install:
+安装:
 
 ```bash
 npm install -g jms-cli
 ```
 
-Create a new project:
+创建一个新项目:
 
 ```bash
 jms create my-project
 ```
 
-Add an existed project:
+添加一个已存在的项目:
 
 ```bash
 jms add D:\my-project
 ```
 
-Project console board:
+项目管理控制面板:
 
 ```bash
 jms console
 ```
 
-List all the project:
+列出本机所有的项目:
 
 ```bash
 jms list
 ```
 
-Change the npm source:
+更换 npm 源:
 
 ```bash
 jms source
