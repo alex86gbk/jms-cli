@@ -17,7 +17,7 @@ const urlHelper = new UrlHelper(location);
   /*************** dom method *******************/
   let setDomMap, renderDOM, renderDashBoard;
   /*************** event method *******************/
-  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar
+  let attachEvent, onClickSidebar, onScrollEffectSidebar
     , onClickGetMock, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
@@ -35,7 +35,6 @@ const urlHelper = new UrlHelper(location);
   setDomMap = function () {
     domMap = {
       $body: $('body'),
-      $navBar: $('#navBar'),
       $sidebar: $('#sidebar'),
       $projectServiceApi: $('#project_service_api'),
       $settingForm: $('#setting_form'),
@@ -103,25 +102,12 @@ const urlHelper = new UrlHelper(location);
    * 初始化所有事件绑定
    */
   attachEvent = function () {
-    domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
     domMap.$projectServiceApi.on('click', 'button[data-type="get_mock"]', onClickGetMock);
     domMap.$settingForm.on('click', 'button[type="submit"]', onClickSaveSetting);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
-  };
-
-  /**
-   * 切换项目
-   */
-  onChangeProject = function () {
-    urlHelper.jump({
-      path: '/console_board',
-      search: urlHelper.setSearchParam({
-        project: this.value
-      })
-    });
   };
 
   /**
@@ -354,11 +340,48 @@ const urlHelper = new UrlHelper(location);
    */
   initPageMapTable = function () {
     /**
-     * 格式化链接字段
+     * 格式化参数字段
      * @param value
      */
-    function formatLinkField(value) {
-      return `<a href="${value}" target="_blank">${value}</a>`;
+    function formatParamsField(value) {
+      let str = '<ol class="breadcrumb">';
+
+      for (let i = 0; i < value.length; i++ ) {
+        str += '<li class="active">' + value[i][0] + '</li>';
+      }
+
+      str += '</ol>';
+
+      if (value.length) {
+        return str;
+      } else {
+        return '';
+      }
+    }
+    /**
+     * 格式化链接字段
+     * @param value
+     * @param row
+     */
+    function formatLinkField(value, row) {
+      let link;
+
+      if (row.param.length) {
+        let search = {};
+
+        row.param.map(function (param) {
+          search[param[0]] = param[1];
+        });
+
+        link = urlHelper.link({
+          path: value,
+          search: urlHelper.setSearchParam(search),
+        });
+      } else {
+        link = value;
+      }
+
+      return `<a href="${link}" target="_blank">${link}</a>`;
     }
 
     $('#page_map_table').bootstrapTable({
@@ -371,10 +394,10 @@ const urlHelper = new UrlHelper(location);
       search: true,
       searchTimeOut: 100,
       columns: [
-        {field: 'title', title: '名称', align: 'left', valign: 'top', sortable: 'true', width: '15%'},
-        {field: 'filePath', title: '详细', align: 'left', valign: 'top', sortable: 'true', width: '25%'},
-        {field: 'param', title: '参数', align: 'left', valign: 'top', sortable: 'true', width: '25%'},
-        {field: 'link', title: '查看', align: 'left', valign: 'top', sortable: 'true', width: '35%', formatter: formatLinkField},
+        {field: 'title', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: '15%'},
+        {field: 'filePath', title: '详细', align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
+        {field: 'param', title: '参数', align: 'left', valign: 'middle', sortable: 'true', width: '25%', formatter: formatParamsField},
+        {field: 'link', title: '示例', align: 'left', valign: 'middle', sortable: 'true', width: '35%', formatter: formatLinkField},
       ],
       showColumns: true,
       data: stateMap.pageMapData,

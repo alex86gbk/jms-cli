@@ -152,7 +152,8 @@ input + label {
   padding: 20px;
   font-size: 20px;
 }
-.category .breadcrumb {
+.category .breadcrumb,
+.page-map .breadcrumb {
   background-color: transparent;
   margin-bottom: 0;
   padding: 0;

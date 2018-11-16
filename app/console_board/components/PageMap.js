@@ -8,7 +8,28 @@ const setting = require('./Setting');
 const pageRoot = 'templates';
 
 /**
- * 生成页面地图 TODO 设置与读取页面参数
+ * 获取页面参数
+ * @return {Object}
+ */
+function getParams($meta) {
+  let params = [];
+
+  if ($meta.length) {
+    $meta.each(function () {
+      if (this.attribs.name === 'param') {
+        if (this.attribs.content.indexOf('=') > 0) {
+          params.push(this.attribs.content.split('='));
+        }
+      }
+    });
+    return params;
+  } else {
+    return [];
+  }
+}
+
+/**
+ * 生成页面地图
  * @param projectPath
  * @param root
  * @param fileStats
@@ -20,6 +41,7 @@ function generatePageMap(projectPath, root, fileStats) {
 
   let title;
   let link;
+  let params;
 
   if (projectSetting.publicPath === '/') {
     link =
@@ -43,6 +65,7 @@ function generatePageMap(projectPath, root, fileStats) {
     const $ = cheerio.load(fileContent);
 
     title = $('title').text();
+    params = getParams($('meta'));
   } catch (err) {
     title = '';
   }
@@ -50,7 +73,7 @@ function generatePageMap(projectPath, root, fileStats) {
   return {
     title: title,
     filePath: filePath,
-    param: '',
+    param: params,
     link: link,
   };
 }
