@@ -9,18 +9,22 @@ const urlHelper = new UrlHelper(location);
     pageMapData: null,
     categoryData: null,
     serviceApiData: null,
+    mockData: null,
+    mockTitle: null,
   };
   let domMap = {};
   let sidebarItems = [], validateSettingForm;
   /*************** dom method *******************/
   let setDomMap, renderDOM, renderDashBoard;
   /*************** event method *******************/
-  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar, onClickSaveSetting
+  let attachEvent, onChangeProject, onClickSidebar, onScrollEffectSidebar
+    , onClickGetMock, onClickSaveSetting
     , onClickStartServer, onClickStopServer;
   /*************** public method *******************/
-  let init, getSidebarItem, activeSidebarItem, getPageMap, getCategory, getServiceApi
+  let init, getSidebarItem, activeSidebarItem, getPageMap, getCategory
+    , getServiceApi, getMock
     , initPageMapTable, initCategoryTable, initServiceApiTable
-    , initAceEditor, initValidate
+    , initMockLayerModal, initAceEditor, initValidate
     , saveSetting, startServer, stopServer, checkServerStatus;
   /*------------------------------- END VARIABLES ----------------------------------*/
 
@@ -33,6 +37,7 @@ const urlHelper = new UrlHelper(location);
       $body: $('body'),
       $navBar: $('#navBar'),
       $sidebar: $('#sidebar'),
+      $projectServiceApi: $('#project_service_api'),
       $settingForm: $('#setting_form'),
       $projectDashboard: $('#project_dashboard').next(),
     };
@@ -100,6 +105,7 @@ const urlHelper = new UrlHelper(location);
   attachEvent = function () {
     domMap.$navBar.on('change', 'select', onChangeProject);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
+    domMap.$projectServiceApi.on('click', 'button[data-type="get_mock"]', onClickGetMock);
     domMap.$settingForm.on('click', 'button[type="submit"]', onClickSaveSetting);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
     domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
@@ -126,6 +132,19 @@ const urlHelper = new UrlHelper(location);
 
     $that.siblings().removeClass('active');
     $that.addClass('active');
+  };
+
+  /**
+   * 点击获取 mock 数据
+   */
+  onClickGetMock = function (event) {
+    const value = event.target.value.split('=>');
+
+    try {
+      getMock(value[0], value[1]).then(initMockLayerModal).then(initAceEditor);
+    } catch (err) {
+      layer.msg(err.message, {icon: 5});
+    }
   };
 
   /**
@@ -211,7 +230,6 @@ const urlHelper = new UrlHelper(location);
       getSidebarItem();
       getPageMap().then(initPageMapTable);
       getCategory().then(initCategoryTable);
-      //getServiceApi().then(initServiceApiTable).then(initAceEditor);
       getServiceApi().then(initServiceApiTable);
       initValidate();
     });
@@ -309,6 +327,29 @@ const urlHelper = new UrlHelper(location);
   };
 
   /**
+   * 获取模拟数据
+   */
+  getMock = function (category, name) {
+    return $.ajax({
+      url: '/console_board/getMock',
+      type: 'post',
+      data: {
+        category: category,
+        name: name
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.message === 'ok') {
+          stateMap.mockData = data.data;
+          stateMap.mockTitle = name;
+        } else {
+          layer.msg('获取 mock 数据失败', {icon: 5});
+        }
+      }
+    });
+  };
+
+  /**
    * 初始化项目地图表格
    */
   initPageMapTable = function () {
@@ -389,13 +430,7 @@ const urlHelper = new UrlHelper(location);
      * @param value
      */
     function formatMockField(value) {
-      /*let str = '<pre class="mock"><textarea>';
-
-      str += value;
-      str += '</textarea></pre>';
-
-      return str;*/
-      return '<button type="button" class="btn btn-link" value="' + value + '">查看</button>';
+      return '<button type="button" class="btn btn-link" data-type="get_mock" value="' + value + '">查看</button>';
     }
 
     $('#service_api_table').bootstrapTable({
@@ -423,6 +458,28 @@ const urlHelper = new UrlHelper(location);
   };
 
   /**
+   * 初始化 layer 弹窗
+   */
+  initMockLayerModal = function () {
+    let content = '<pre class="mock"><textarea>';
+    content += stateMap.mockData;
+    content += '</textarea></pre>';
+
+    return new Promise(function (resolve) {
+      layer.open({
+        title: stateMap.mockTitle,
+        content: content,
+        area: '640px',
+        scrollbar: false,
+        btn: [],
+        success: function(){
+          resolve();
+        }
+      });
+    })
+  };
+
+  /**
    * 初始化 Ace 编辑器
    */
   initAceEditor = function () {
@@ -436,7 +493,7 @@ const urlHelper = new UrlHelper(location);
       editor.setOption("wrap", "free");
       editor.setTheme("ace/theme/eclipse");
       editor.getSession().setMode("ace/mode/json");
-      editor.session.setValue(JSON.stringify(JSON.parse(value), null, 4));
+      editor.session.setValue(JSON.stringify(new Function('return '+ value +';')(), null, 4));
     });
   };
 

@@ -11,10 +11,10 @@ const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 
 global.settableVersion = '0.1.1';
+global.JMSVersion = null;
 
 let projects;
 let currentProject;
-let JMSVersion;
 
 /**
  * 获取当前项目
@@ -45,10 +45,10 @@ function getJMSVersion(path) {
   return new Promise(function (resolve) {
     fs.readFile(`${path}/package.json`, (err) => {
       if (err) {
-        console.log(err);
-        resolve(null);
+        global.JMSVersion = null;
+        resolve();
       } else {
-        JMSVersion = require(`${path}/package.json`).version;
+        global.JMSVersion = require(`${path}/package.json`).version;
         resolve();
       }
     });
@@ -98,6 +98,22 @@ function getCategory(req, res) {
  */
 function getServiceApi(req, res) {
   serviceApi.getServiceApi(currentProject).then((data) => {
+    res.send({
+      'message': 'ok',
+      'data': data
+    });
+  }, () => {
+    res.send({
+      'message': 'fail',
+    });
+  });
+}
+
+/**
+ * 获取接口模拟数据
+ */
+function getMock(req, res) {
+  serviceApi.getMock(currentProject, req.body).then((data) => {
     res.send({
       'message': 'ok',
       'data': data
@@ -169,12 +185,12 @@ function getServerStatus(req, res) {
 function renderDefaultView(req, res) {
   co(function *() {
     yield getJMSVersion(currentProject);
-    const settableProject = JMSVersion >= global.settableVersion;
+    const settableProject = global.JMSVersion >= global.settableVersion;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
-      JMSVersion: JMSVersion,
+      JMSVersion: global.JMSVersion,
       settableVersion: global.settableVersion,
       setting: settableProject ? setting.getSetting(currentProject) : null,
       serverStatus: settableProject ? serverControl.getServerStatus(currentProject) : null,
@@ -188,6 +204,7 @@ router.get('/', renderDefaultView);
 router.post('/getPageMap', getPageMap);
 router.post('/getCategory', getCategory);
 router.post('/getServiceApi', getServiceApi);
+router.post('/getMock', getMock);
 router.post('/startServer', startServer);
 router.post('/stopServer', stopServer);
 router.post('/setSetting', setSetting);

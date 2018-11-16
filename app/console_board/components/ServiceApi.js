@@ -69,7 +69,7 @@ function generateServiceApi(root, fileStats) {
     apiFunction = generateApiFunctionInfo(esprima.parseModule(fileContent, { comment: true }));
     apiFunction.map((item) => {
       item['category'] = title;
-      item['mock'] = `${title}->${item['name']}`;
+      item['mock'] = `${title}=>${item['name']}`;
     });
   } catch (err) {
     apiFunction = [];
@@ -113,6 +113,35 @@ async function getServiceApi(projectPath) {
   });
 }
 
+/**
+ * 获取模拟数据
+ * @param {String} projectPath
+ * @param {Object} req
+ * @return {Promise.<void>}
+ */
+async function getMock(projectPath, req) {
+  let mockPath = global.JMSVersion >= global.settableVersion ? 'mock' : 'api';
+
+  try {
+    let mockModule = require(path.resolve(projectPath, mockPath, req.category));
+    let property = mockModule[req.name];
+
+    if (typeof property === 'function') {
+      return Promise.resolve(
+        property.toString()
+          .replace(/^function[\s\S]*res.send\(/, '')
+          .replace(/\)[\s]*}$/, '')
+          .replace(/\);[\s]*}$/, '')
+        );
+    } else if (typeof property === 'object') {
+      return Promise.resolve(JSON.stringify(property));
+    }
+  } catch (err) {
+    return Promise.resolve(null);
+  }
+}
+
 module.exports = {
   getServiceApi,
+  getMock,
 };
