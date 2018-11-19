@@ -10,7 +10,7 @@ const serviceApi = require('../components/ServiceApi');
 const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 
-global.settableVersion = '0.1.1';
+global.settableVersion = '0.2.0';
 global.JMSVersion = null;
 
 let projects;

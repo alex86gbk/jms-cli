@@ -3,7 +3,10 @@ const urlHelper = new UrlHelper(location);
 (function () {
   "use strict";
   /*------------------------------- VARIABLES ----------------------------------*/
-  let configMap = {};
+  let configMap = {
+    JMSVersion: null,
+    settableVersion: '0.2.0',
+  };
   let stateMap = {
     loading: null,
     pageMapData: null,
@@ -211,6 +214,7 @@ const urlHelper = new UrlHelper(location);
    */
   init = function() {
     $(function () {
+      configMap.JMSVersion = $('#version').text();
       setDomMap();
       attachEvent();
       getSidebarItem();
@@ -408,6 +412,7 @@ const urlHelper = new UrlHelper(location);
    * 初始化项目分类表格
    */
   initCategoryTable = function () {
+    let mockTitle;
     /**
      * 格式化接口字段
      * @param value
@@ -424,6 +429,12 @@ const urlHelper = new UrlHelper(location);
       return str;
     }
 
+    if (configMap.JMSVersion >= configMap.settableVersion) {
+      mockTitle = 'Mock 数据文件夹';
+    } else {
+      mockTitle = 'Mock 数据模块';
+    }
+
     $('#category_table').bootstrapTable({
       striped: true,
       pagination: true,
@@ -436,7 +447,7 @@ const urlHelper = new UrlHelper(location);
       columns: [
         {field: 'title', title: '名称', align: 'left', valign: 'middle', sortable: 'true', width: '15%'},
         {field: 'filePath', title: 'Service 模块', align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
-        {field: 'mockFilePath', title: 'Mock 数据模块', align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
+        {field: 'mockModule', title: mockTitle, align: 'left', valign: 'middle', sortable: 'true', width: '25%'},
         {field: 'item', title: '包含接口', align: 'left', valign: 'middle', sortable: 'true', width: '35%', formatter: formatItemField},
       ],
       showColumns: true,

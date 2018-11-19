@@ -120,11 +120,14 @@ async function getServiceApi(projectPath) {
  * @return {Promise.<void>}
  */
 async function getMock(projectPath, req) {
-  let mockPath = global.JMSVersion >= global.settableVersion ? 'mock' : 'api';
+  let property;
 
   try {
-    let mockModule = require(path.resolve(projectPath, mockPath, req.category));
-    let property = mockModule[req.name];
+    if (global.JMSVersion >= global.settableVersion) {
+      property = require(path.resolve(projectPath, 'mock', req.category, req.name));
+    } else {
+      property = require(path.resolve(projectPath, 'api', req.category))[req.name];
+    }
 
     if (typeof property === 'function') {
       return Promise.resolve(

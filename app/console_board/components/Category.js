@@ -5,42 +5,94 @@ const extractComments = require('extract-comments');
 
 /**
  * 生成分类
- * @param projectPath
- * @param root
- * @param fileStats
+ * @param {String} projectPath
+ * @param {String} root
+ * @param {String} fileStats
+ * @param {Array} mock
  * @return {Object}
  */
-function generateCategory(projectPath, root, fileStats) {
+function generateCategory(projectPath, root, fileStats, mock) {
   const filePath = `${root.replace(path.resolve(projectPath), '').replace(/\\/g, '/')}/${fileStats.name}`;
   const title = fileStats.name.replace(/Services\.js$/i, '');
 
-  let mockFilePath;
   let items;
+  let mockModule;
 
   try {
     let fileContent = fs.readFileSync(path.resolve(root, fileStats.name), 'utf-8');
-    mockFilePath = extractComments.first(fileContent)[0].value.split('\n')[1];
     items = extractComments.block(fileContent);
     items = items.map((item) => {
       return item.value.split('\n')[1];
     });
   } catch (err) {
     items = '';
-    mockFilePath = ''
   }
 
-  if (mockFilePath.indexOf('mock@') !== -1) {
-    mockFilePath = mockFilePath.replace('mock@', '');
-  } else {
-    mockFilePath = '';
-  }
+  mock.forEach((item) => {
+    if (item.indexOf(title) >= 0) {
+      mockModule = item;
+    }
+  });
+
+  mockModule = mockModule ? mockModule : '';
 
   return {
     title: title,
     filePath: filePath,
-    mockFilePath: mockFilePath,
+    mockModule: mockModule,
     item: items,
   };
+}
+
+/**
+ * 获取 mock 数据文件
+ * @param {String} projectPath
+ */
+function getMockFile(projectPath) {
+  const walkerOptions = {
+    followLinks: false,
+  };
+  const filterReg = /\.js$/;
+  const walker = walk.walk(path.resolve(projectPath, 'api'), walkerOptions);
+
+  let mock = [];
+
+  walker.on('file', function (root, fileStats, next) {
+    if (filterReg.test(fileStats.name)) {
+      mock.push(`${root.replace(path.resolve(projectPath), '').replace(/\\/g, '/')}/${fileStats.name}`);
+    }
+    next();
+  });
+
+  return new Promise((resolve) => {
+    walker.on('end', function () {
+      resolve(mock);
+    });
+  });
+}
+
+/**
+ * 获取 mock 数据文件夹
+ * @param {String} projectPath
+ */
+function getMockDir(projectPath) {
+  const walkerOptions = {
+    followLinks: false,
+  };
+  const walker = walk.walk(path.resolve(projectPath, 'mock'), walkerOptions);
+
+  let mock = [];
+
+  walker.on('directory', function (root, fileStats, next) {
+    mock.push(`${root.replace(path.resolve(projectPath), '').replace(/\\/g, '/')}/${fileStats.name}`);
+    next();
+  });
+
+  return new Promise((resolve) => {
+    walker.on('end', function () {
+      resolve(mock);
+    });
+  });
 }
 
 /**
@@ -53,13 +105,20 @@ async function getCategory(projectPath) {
     followLinks: false,
   };
   const filterReg = /Services\.js$/;
-  const walker = walk.walk(path.resolve(projectPath, 'src', 'services'), walkerOptions);
+  let mock;
 
+  if (global.JMSVersion >= global.settableVersion) {
+    mock = await getMockDir(projectPath);
+  } else {
+    mock = await getMockFile(projectPath);
+  }
+
+  const walker = walk.walk(path.resolve(projectPath, 'src', 'services'), walkerOptions);
   let categories = [];
 
   walker.on('file', function (root, fileStats, next) {
     if (filterReg.test(fileStats.name)) {
-      categories.push(generateCategory(projectPath, root, fileStats));
+      categories.push(generateCategory(projectPath, root, fileStats, mock));
     }
     next();
   });

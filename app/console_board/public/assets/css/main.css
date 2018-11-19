@@ -40,6 +40,9 @@ input + label {
   width: 100%;
   z-index: 1111;
 }
+.navbar-static-top kbd {
+  margin: 0 5px;
+}
 
 /*
  * Sidebar

@@ -11,8 +11,8 @@ const fkill = require('fkill');
  * @return {Object}
  */
 function getServerStatus(projectPath) {
-  const devPid = path.resolve(projectPath, 'config', 'dev-server.pid');
-  const mockPid = path.resolve(projectPath, 'config', 'mock-server.pid');
+  const devPid = path.resolve(projectPath, '.var', 'dev-server.pid');
+  const mockPid = path.resolve(projectPath, '.var', 'mock-server.pid');
   let devServerStatus;
   let mockServerStatus;
 
@@ -65,8 +65,8 @@ async function startServer(projectPath, projectServer) {
  */
 async function stopServer(projectPath, projectServer) {
   const server = projectServer;
-  const devPid = path.resolve(projectPath, 'config', 'dev-server.pid');
-  const mockPid = path.resolve(projectPath, 'config', 'mock-server.pid');
+  const devPid = path.resolve(projectPath, '.var', 'dev-server.pid');
+  const mockPid = path.resolve(projectPath, '.var', 'mock-server.pid');
   let devServerStatus;
   let mockServerStatus;
 
