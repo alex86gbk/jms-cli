@@ -55,12 +55,15 @@ function generateApiFunctionInfo(ast) {
 
 /**
  * 生成接口
- * @param root
- * @param fileStats
+ * @param {String} projectPath
+ * @param {String} root
+ * @param {Object} fileStats
  * @return {Object}
  */
-function generateServiceApi(root, fileStats) {
-  const title = fileStats.name.replace(/Services\.js$/i, '');
+function generateServiceApi(projectPath, root, fileStats) {
+  const filePath = `${root.replace(path.resolve(projectPath, 'src', 'services'), '').replace(/\\/g, '/')}/${fileStats.name}`;
+  const category = fileStats.name.replace(/Services\.js$/i, '');
+  const fileCategory = filePath.replace(/^\//, '').replace(/Services\.js$/i, '');
 
   let apiFunction;
 
@@ -68,8 +71,8 @@ function generateServiceApi(root, fileStats) {
     let fileContent = fs.readFileSync(path.resolve(root, fileStats.name), 'utf-8');
     apiFunction = generateApiFunctionInfo(esprima.parseModule(fileContent, { comment: true }));
     apiFunction.map((item) => {
-      item['category'] = title;
-      item['mock'] = `${title}=>${item['name']}`;
+      item['category'] = category;
+      item['mock'] = `${fileCategory}=>${item['name']}`;
     });
   } catch (err) {
     apiFunction = [];
@@ -94,7 +97,7 @@ async function getServiceApi(projectPath) {
 
   walker.on('file', function (root, fileStats, next) {
     if (filterReg.test(fileStats.name)) {
-      serviceApi = serviceApi.concat(generateServiceApi(root, fileStats));
+      serviceApi = serviceApi.concat(generateServiceApi(projectPath, root, fileStats));
     }
     next();
   });
