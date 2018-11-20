@@ -26,10 +26,20 @@ function generateApiFunctionInfo(ast) {
                       if (properties['key']['name'] === 'url' && properties['value']['type'] === 'BinaryExpression') {
                         api['url'] = properties['value']['right']['value'];
                       }
-                      if (properties['key']['name'] === 'url' && properties['value']['type'] === 'Literal') {
+                      else if (properties['key']['name'] === 'url' && properties['value']['type'] === 'Literal') {
                         api['url'] = properties['value']['value'];
                       }
-                      if (properties['key']['name'] === 'method' && properties['value']['type'] === 'Literal') {
+                      else if (properties['key']['name'] === 'url' && properties['value']['type'] === 'TemplateLiteral') {
+                        api['url'] = properties['value']['quasis'].map((quasis) => {
+                          if (quasis.tail) {
+                            return quasis.value.cooked;
+                          }
+                        }).join('');
+                      }
+                      else if (properties['key']['name'] === 'url' && properties['value']['type'] === 'TemplateLiteral') {
+                        api['url'] = properties['value']['value'];
+                      }
+                      else if (properties['key']['name'] === 'method' && properties['value']['type'] === 'Literal') {
                         api['method'] = properties['value']['value'];
                       }
                     }
@@ -136,6 +146,7 @@ async function getMock(projectPath, req) {
       return Promise.resolve(
         property.toString()
           .replace(/^function[\s\S]*res.send\(/, '')
+          .replace(/^\([\s\S]*\)[\s\S]*=>[\s\S]*res.send\(/, '')
           .replace(/\)[\s]*}$/, '')
           .replace(/\);[\s]*}$/, '')
         );
