@@ -30,26 +30,34 @@ function getCurrentProject(req, res, next) {
 
     projects = yield db.queryDataSync(projectDB);
     projects = projects.map((item) => {
-      return item.path;
+      return {
+        name: item.name,
+        path: item.path
+      };
     });
-    currentProject = currentProject ? currentProject : projects[0];
+    currentProject = currentProject ? currentProject : projects[0].path;
     next();
   });
 }
 
 /**
- * 获取 JMS 版本
+ * 获取项目基础信息
  * @param path 项目路径
  */
-function getJMSVersion(path) {
+function getProjectBaseInfo(path) {
   return new Promise(function (resolve) {
     fs.readFile(`${path}/package.json`, (err) => {
       if (err) {
-        global.JMSVersion = null;
         resolve();
       } else {
-        global.JMSVersion = require(`${path}/package.json`).version;
-        resolve();
+        let projectInfo = require(`${path}/package.json`);
+
+        global.JMSVersion = projectInfo.JMSVersion;
+        resolve({
+          JMSVersion: projectInfo.JMSVersion,
+          name: projectInfo.alias,
+          version: projectInfo.version,
+        });
       }
     });
   });
@@ -184,13 +192,13 @@ function getServerStatus(req, res) {
  */
 function renderDefaultView(req, res) {
   co(function *() {
-    yield getJMSVersion(currentProject);
+    const baseInfo = yield getProjectBaseInfo(currentProject);
     const settableProject = global.JMSVersion >= global.settableVersion;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
-      JMSVersion: global.JMSVersion,
+      baseInfo: baseInfo,
       settableVersion: global.settableVersion,
       setting: settableProject ? setting.getSetting(currentProject) : null,
       serverStatus: settableProject ? serverControl.getServerStatus(currentProject) : null,

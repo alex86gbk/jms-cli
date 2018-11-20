@@ -5,7 +5,7 @@ html(lang="zh-CN")
     if projects.length
       include ./templates/_nav
       div(class="container-fluid")
-        if JMSVersion
+        if baseInfo.JMSVersion
           div(class="row")
             include ./templates/_project_sidebar
             div(class="main")

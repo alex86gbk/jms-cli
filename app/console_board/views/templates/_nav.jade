@@ -2,9 +2,11 @@ nav(class="navbar navbar-inverse navbar-static navbar-static-top")
   div(class="container-fluid")
     div(class="navbar-header")
       span(class="navbar-brand") 当前项目
-        kbd #{currentProject}
+        a(tabindex="0" role="button" class="btn btn-link btn-xs" data-toggle="popover" data-placement="bottom" data-content="#{currentProject}") #{baseInfo.name}
+      span(class="navbar-brand") 项目版本
+        kbd(id="version") #{baseInfo.version}
       span(class="navbar-brand") JMS 版本
-        kbd(id="version") #{JMSVersion}
+        kbd(id="JMS_version") #{baseInfo.JMSVersion}
     div(class="collapse navbar-collapse")
       ul(class="nav navbar-nav navbar-right")
         li(class="dropdown")
@@ -13,11 +15,11 @@ nav(class="navbar navbar-inverse navbar-static navbar-static-top")
             span(class="caret")
           ul(class="dropdown-menu")
             each project in projects
-              if currentProject === project
+              if currentProject === project.path
                 li(class="active")
-                  a(href="/console_board?project=#{project}")
-                    =project
+                  a(href="/console_board?project=#{project.path}")
+                    =project.name
               else
                 li
-                  a(href="/console_board?project=#{project}")
-                    =project
+                  a(href="/console_board?project=#{project.path}")
+                    =project.name

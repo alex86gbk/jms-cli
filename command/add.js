@@ -19,8 +19,8 @@ const argv = process.argv.splice(2);
  */
 function checkProject(projectName) {
   return new Promise((resolve) => {
-    if (projects.indexOf(path.resolve(process.cwd(), projectName)) > -1) {
-      console.log(chalk.red(` Project "${path.resolve(process.cwd(), projectName)}" directory has been exist!`));
+    if (projects.indexOf(path.resolve(projectName)) > -1) {
+      console.log(chalk.red(` Project "${path.resolve(projectName)}" directory has been exist!`));
       process.exit();
     } else {
       resolve();
@@ -35,15 +35,15 @@ function checkProject(projectName) {
  */
 function addProject(projectName) {
   const data = {
-    name: path.resolve(process.cwd(), projectName),
-    path: path.resolve(process.cwd(), projectName),
+    name: require(path.resolve(projectName, 'package.json')).alias,
+    path: path.resolve(projectName),
   };
 
-  projects.push(path.resolve(process.cwd(), projectName));
+  projects.push(path.resolve(projectName));
 
   return new Promise((resolve) => {
     db.insertDataSync(project, data).then(() => {
-      console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} has been added!`));
+      console.log(chalk.green(`\n New project ${path.resolve(projectName)} has been added!`));
       console.log(chalk.grey(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
       resolve();

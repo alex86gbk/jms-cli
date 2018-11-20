@@ -214,7 +214,7 @@ const urlHelper = new UrlHelper(location);
    */
   init = function() {
     $(function () {
-      configMap.JMSVersion = $('#version').text();
+      configMap.JMSVersion = $('#JMS_version').text();
       setDomMap();
       attachEvent();
       getSidebarItem();
@@ -222,6 +222,10 @@ const urlHelper = new UrlHelper(location);
       getCategory().then(initCategoryTable);
       getServiceApi().then(initServiceApiTable);
       initValidate();
+      $('[data-toggle="popover"]').popover({
+        container: '.navbar-static-top',
+        trigger: 'focus',
+      });
     });
   };
 

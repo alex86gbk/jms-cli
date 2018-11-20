@@ -52,6 +52,32 @@ function insertDataSync(dataBase, data) {
   });
 }
 
+/**
+ * 更新数据（同步）
+ * @param dataBase 数据库
+ * @param queryData 查询数据
+ * @param updateData 更新数据
+ * @param options 选项
+ * @return {Promise}
+ */
+function updateDataSync(dataBase, queryData, updateData, options) {
+  let defaultOptions = {};
+
+  defaultOptions = Object.assign(defaultOptions, options);
+  return new Promise(function (resolve, reject) {
+    dataBase.update(queryData, updateData, defaultOptions, function (err, numAffected, affectedDocuments, upsert) {
+      if (err) {
+        reject();
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 module.exports = {
-  loadDBFiles, queryDataSync, insertDataSync
+  loadDBFiles,
+  queryDataSync,
+  insertDataSync,
+  updateDataSync,
 };

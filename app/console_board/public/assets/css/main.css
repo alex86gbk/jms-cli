@@ -40,8 +40,28 @@ input + label {
   width: 100%;
   z-index: 1111;
 }
-.navbar-static-top kbd {
+.navbar-static-top kbd,
+.navbar-static-top a {
+  display: inline-block;
   margin: 0 5px;
+  outline: none;
+  padding: 1px 5px;
+  vertical-align: middle;
+}
+.navbar-static-top .btn-link {
+  font-size: 14px;
+  border: none;
+  color: #ffffff;
+  text-decoration: none;
+}
+.navbar-static-top .btn-link:focus {
+  outline: none;
+}
+.navbar-static-top .popover {
+  max-width: inherit;
+}
+.navbar-static-top .navbar-brand {
+  font-size: 16px;
 }
 
 /*
@@ -160,6 +180,10 @@ input + label {
   background-color: transparent;
   margin-bottom: 0;
   padding: 0;
+}
+.category .breadcrumb>li+li:before,
+.page-map .breadcrumb>li+li:before {
+  content: '\00a0|\00a0';
 }
 .setting .input-group-addon:first-child {
   border-right: 1px solid #ccc;
