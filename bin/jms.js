@@ -2,11 +2,8 @@
 
 const program = require('commander');
 
-// 定义脚手架的文件路径
 process.env.NODE_PATH = `${__dirname}/../node_modules/`;
-// 定义当前版本
 program.version(require('../package').version);
-// 定义使用方法
 program.usage('<command>');
 
 // 添加项目
@@ -40,9 +37,18 @@ program
 program
   .command('list')
   .description('List all the project')
-  .alias('l')
+  .alias('ls')
   .action(() => {
     require('../command/list')();
+  });
+
+// 移除项目
+program
+  .command('remove')
+  .description('Remove a project, Not delete from hard disk')
+  .alias('rm')
+  .action(() => {
+    require('../command/remove')();
   });
 
 // 切换源

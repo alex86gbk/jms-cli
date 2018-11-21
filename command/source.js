@@ -24,7 +24,7 @@ function listSource() {
 
 /**
  * 切换 npm 源
- * number {number}
+ * @param {number} number
  * @return {Promise}
  */
 function changeSource(number) {

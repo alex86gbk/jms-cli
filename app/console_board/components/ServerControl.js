@@ -46,12 +46,10 @@ async function startServer(projectPath, projectServer) {
 
   if (server === 'dev-server') {
     exec(devCommand).on('exit', function () {
-      console.log('dev-server stop');
     });
   }
   if (server === 'mock-server') {
     exec(mockCommand).on('exit', function () {
-      console.log('mock-server stop');
     });
   }
 
