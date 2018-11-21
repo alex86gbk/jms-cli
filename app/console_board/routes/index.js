@@ -10,7 +10,16 @@ const serviceApi = require('../components/ServiceApi');
 const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 
-global.settableVersion = '0.2.0';
+global.versionMap = {
+  'release-0.2.0': {
+    version: '0.2.0',
+    gitHub: 'https://github.com/alex86gbk/js-multi-seed/releases/tag/0.2.0'
+  },
+  'pre-release-0.1.1': {
+    version: '0.1.1',
+    gitHub: 'https://github.com/alex86gbk/js-multi-seed/releases/tag/v0.1.1'
+  },
+};
 global.JMSVersion = null;
 
 let projects;
@@ -193,15 +202,15 @@ function getServerStatus(req, res) {
 function renderDefaultView(req, res) {
   co(function *() {
     const baseInfo = yield getProjectBaseInfo(currentProject);
-    const settableProject = global.JMSVersion >= global.settableVersion;
+    const preRelease011 = global.JMSVersion >= global.versionMap['pre-release-0.1.1'].version;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
       baseInfo: baseInfo,
-      settableVersion: global.settableVersion,
-      setting: settableProject ? setting.getSetting(currentProject) : null,
-      serverStatus: settableProject ? serverControl.getServerStatus(currentProject) : null,
+      preRelease011: global.versionMap['pre-release-0.1.1'].version,
+      setting: preRelease011 ? setting.getSetting(currentProject) : null,
+      serverStatus: preRelease011 ? serverControl.getServerStatus(currentProject) : null,
     });
   });
 }

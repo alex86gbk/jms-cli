@@ -136,7 +136,7 @@ async function getMock(projectPath, req) {
   let property;
 
   try {
-    if (global.JMSVersion >= global.settableVersion) {
+    if (global.JMSVersion >= global.versionMap['release-0.2.0'].version) {
       property = require(path.resolve(projectPath, 'mock', req.category, req.name));
     } else {
       property = require(path.resolve(projectPath, 'api', req.category))[req.name];

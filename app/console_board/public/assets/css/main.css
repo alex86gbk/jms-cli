@@ -185,6 +185,11 @@ input + label {
 .page-map .breadcrumb>li+li:before {
   content: '\00a0|\00a0';
 }
+.setting .input-group-addon {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
 .setting .input-group-addon:first-child {
   border-right: 1px solid #ccc;
   border-top-right-radius: 4px;

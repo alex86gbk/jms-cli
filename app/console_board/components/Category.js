@@ -107,7 +107,7 @@ async function getCategory(projectPath) {
   const filterReg = /Services\.js$/;
   let mock;
 
-  if (global.JMSVersion >= global.settableVersion) {
+  if (global.JMSVersion >= global.versionMap['release-0.2.0'].version) {
     mock = await getMockDir(projectPath);
   } else {
     mock = await getMockFile(projectPath);
