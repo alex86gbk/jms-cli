@@ -203,14 +203,16 @@ function renderDefaultView(req, res) {
   co(function *() {
     const baseInfo = yield getProjectBaseInfo(currentProject);
     const preRelease011 = global.JMSVersion >= global.versionMap['pre-release-0.1.1'].version;
+    const release020 = global.JMSVersion >= global.versionMap['release-0.2.0'].version;
 
     res.render('index', {
       projects: projects,
       currentProject: currentProject,
       baseInfo: baseInfo,
       preRelease011: global.versionMap['pre-release-0.1.1'].version,
+      release020: global.versionMap['release-0.2.0'].version,
       setting: preRelease011 ? setting.getSetting(currentProject) : null,
-      serverStatus: preRelease011 ? serverControl.getServerStatus(currentProject) : null,
+      serverStatus: release020 ? serverControl.getServerStatus(currentProject) : null,
     });
   });
 }

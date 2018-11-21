@@ -62,18 +62,24 @@ const urlHelper = new UrlHelper(location);
     if (server === 'dev-server') {
       if (serverStatus.devServer === 0 || serverStatus.devServer) {
         if (serverStatus.devServer !== 0) {
-          domMap.$projectDashboard.find('.list-group-item').eq(0).html(
-            '<span>前端服务状态</span>'+
-            '<button type="button" data-type="dev-server" disabled="" class="btn btn-success btn-xs">开启</button>'+
-            '<button type="button" data-type="dev-server" class="btn btn-danger btn-xs">停止</button>'+
-            '<span class="badge list-group-item-success">运行中</span>'
+          domMap.$projectDashboard.find('.panel-body').eq(0).html(
+            '<button type="button" data-type="dev-server" data-control="start" disabled="" class="btn btn-primary btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-play">开启</span>' +
+            '</button>' +
+            '<button type="button" data-type="dev-server" data-control="stop" class="btn btn-danger btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-stop">停止</span>' +
+            '</button>' +
+            '<span class="badge list-group-item-success pull-right">运行中</span>'
           );
         } else {
-          domMap.$projectDashboard.find('.list-group-item').eq(0).html(
-            '<span>前端服务状态</span>'+
-            '<button type="button" data-type="dev-server" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-            '<button type="button" data-type="dev-server" disabled="" class="btn btn-danger btn-xs">停止</button>'+
-            '<span class="badge list-group-item-danger">未开启</span>'
+          domMap.$projectDashboard.find('.panel-body').eq(0).html(
+            '<button type="button" data-type="dev-server" data-control="start" data-loading-text="开启中..." class="btn btn-primary btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-play">开启</span>' +
+            '</button>' +
+            '<button type="button" data-type="dev-server" data-control="stop" disabled="" class="btn btn-danger btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-stop">停止</span>' +
+            '</button>' +
+            '<span class="badge list-group-item-danger pull-right">未开启</span>'
           );
         }
       }
@@ -81,18 +87,24 @@ const urlHelper = new UrlHelper(location);
     if (server === 'mock-server') {
       if (serverStatus.mockServer === 0 || serverStatus.devServer) {
         if (serverStatus.mockServer !== 0) {
-          domMap.$projectDashboard.find('.list-group-item').eq(1).html(
-            '<span>Mock 数据服务状态</span>'+
-            '<button type="button" data-type="mock-server" disabled="" class="btn btn-success btn-xs">开启</button>'+
-            '<button type="button" data-type="mock-server" class="btn btn-danger btn-xs">停止</button>'+
-            '<span class="badge list-group-item-success">运行中</span>'
+          domMap.$projectDashboard.find('.panel-body').eq(1).html(
+            '<button type="button" data-type="mock-server" data-control="start" disabled="" class="btn btn-primary btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-play">开启</span>' +
+            '</button>' +
+            '<button type="button" data-type="mock-server" data-control="stop" class="btn btn-danger btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-stop">停止</span>' +
+            '</button>' +
+            '<span class="badge list-group-item-success pull-right">运行中</span>'
           );
         } else {
-          domMap.$projectDashboard.find('.list-group-item').eq(1).html(
-            '<span>Mock 数据服务状态</span>'+
-            '<button type="button" data-type="mock-server" class="btn btn-success btn-xs" data-loading-text="开启中...">开启</button>'+
-            '<button type="button" data-type="mock-server" disabled="" class="btn btn-danger btn-xs">停止</button>'+
-            '<span class="badge list-group-item-danger">未开启</span>'
+          domMap.$projectDashboard.find('.panel-body').eq(1).html(
+            '<button type="button" data-type="mock-server" data-control="start" data-loading-text="开启中..." class="btn btn-primary btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-play">开启</span>' +
+            '</button>' +
+            '<button type="button" data-type="mock-server" data-control="stop" disabled="" class="btn btn-danger btn-sm">' +
+            '<span aria-hidden="true" class="glyphicon glyphicon-stop">停止</span>' +
+            '</button>' +
+            '<span class="badge list-group-item-danger pull-right">未开启</span>'
           );
         }
       }
@@ -108,8 +120,8 @@ const urlHelper = new UrlHelper(location);
     domMap.$sidebar.on('click', '.nav-sidebar > li', onClickSidebar);
     domMap.$projectServiceApi.on('click', 'button[data-type="get_mock"]', onClickGetMock);
     domMap.$settingForm.on('click', 'button[type="submit"]', onClickSaveSetting);
-    domMap.$projectDashboard.on('click', '.list-group-item > .btn-success', onClickStartServer);
-    domMap.$projectDashboard.on('click', '.list-group-item > .btn-danger', onClickStopServer);
+    domMap.$projectDashboard.on('click', 'button[data-control="start"]', onClickStartServer);
+    domMap.$projectDashboard.on('click', 'button[data-control="stop"]', onClickStopServer);
     $(window).scroll(onScrollEffectSidebar);
   };
 

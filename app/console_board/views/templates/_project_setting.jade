@@ -37,29 +37,40 @@ div(class="row setting")
             | ）
             span(class="text-danger") 必填
           input(type="text" class="form-control" value="#{setting.publicPath}" id="public_path" name="public_path")
-      div(class="text-center col-lg-12 col-sm-12 col-md-12")
-        button(type="submit" class="btn btn-primary") 保存
+      div(class="col-md-2 col-sm-2 col-xs-2 col-md-offset-5 col-sm-offset-5 col-xs-offset-5")
+        div(class="block-5")
+        button(type="submit" class="btn btn-primary btn-block") 保存
   else
     form
       div(class="col-lg-6 col-sm-6 col-md-6")
         div(class="form-group")
-          label(class="input-group-addon" ) 前端服务端口（默认：8080）
+          label(class="input-group-addon" ) 前端服务端口（默认：
+            code 8080
+            | ）
           input(type="text" class="form-control" id="dev_server_port" disabled)
       div(class="col-lg-6 col-sm-6 col-md-6")
         div(class="form-group")
-          label(class="input-group-addon") Mock 数据服务端口（默认：3000）
+          label(class="input-group-addon") Mock 数据服务端口（默认：
+            code 3000
+            | ）
           input(type="text" class="form-control" id="mock_server_port" disabled)
       div(class="col-lg-6 col-sm-6 col-md-6")
         div(class="form-group")
-          label(class="input-group-addon") 反向代理路径（默认：/api 选填）
+          label(class="input-group-addon") 反向代理路径（默认：
+            code /api
+            | ）
           input(type="text" class="form-control" id="proxy_path" disabled)
       div(class="col-lg-6 col-sm-6 col-md-6")
         div(class="form-group")
-          label(class="input-group-addon") YAPI 数据地址（如：http://10.0.2.231:3333/mock/XX）
+          label(class="input-group-addon") YAPI 数据地址（如：
+            code http://10.0.2.231:3333/mock/XX
+            | ）
           input(type="text" class="form-control" id="mock_YAPI" disabled)
       div(class="col-lg-6 col-sm-6 col-md-6")
         div(class="form-group")
-          label(class="input-group-addon") 发布路径（默认：/Content）
+          label(class="input-group-addon") 发布路径（默认：
+            code /Content
+            | ）
           input(type="text" class="form-control" id="public_path" disabled)
     div(class="clearfix")
     div(class="col-md-12")
