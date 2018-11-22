@@ -86,6 +86,7 @@ function generateServiceApi(projectPath, root, fileStats) {
     });
   } catch (err) {
     apiFunction = [];
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   return apiFunction;
@@ -154,6 +155,8 @@ async function getMock(projectPath, req) {
       return Promise.resolve(JSON.stringify(property));
     }
   } catch (err) {
+    global.logger.errorLogger.error('catch error: ', err.stack);
+
     return Promise.resolve(null);
   }
 }

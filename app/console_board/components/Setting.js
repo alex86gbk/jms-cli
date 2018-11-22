@@ -22,6 +22,7 @@ function getSetting(projectPath) {
       },
       publicPath: []
     };
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   return {
@@ -61,6 +62,8 @@ async function setSetting(projectPath, projectSetting) {
 
     return Promise.resolve();
   } catch (err) {
+    global.logger.errorLogger.error('catch error: ', err.stack);
+
     return Promise.reject();
   }
 }

@@ -57,7 +57,12 @@ function getProjectBaseInfo(path) {
   return new Promise(function (resolve) {
     fs.readFile(`${path}/package.json`, (err) => {
       if (err) {
-        resolve();
+        global.logger.errorLogger.error('catch error: ', err.stack);
+        resolve({
+          JMSVersion: null,
+          name: null,
+          version: null,
+        });
       } else {
         let projectInfo = require(`${path}/package.json`);
 
