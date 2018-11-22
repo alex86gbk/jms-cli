@@ -51,6 +51,15 @@ program
     require('../command/remove')();
   });
 
+// 更新项目基本信息
+program
+  .command('refresh')
+  .description('Refresh a project to update project base information')
+  .alias('re')
+  .action(() => {
+    require('../command/refresh')();
+  });
+
 // 切换源
 program
   .command('source')

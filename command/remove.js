@@ -39,7 +39,7 @@ function listProject() {
  */
 function removeProject(number) {
   const id = projects[number - 1]._id;
-  console.log(chalk.white('\n remove project...'));
+  console.log(chalk.white('\n Remove project...'));
 
   return co(function * removeProject() {
     const numRemoved = yield db.removeDataSync(project, { _id: id });
@@ -48,10 +48,10 @@ function removeProject(number) {
       const latestList = yield listProject();
 
       if (projects.length) {
-        console.log(chalk.green('\n Removing done!'));
+        console.log(chalk.green('\n Remove project completed!'));
         console.log(chalk.white(`\n The latest project list is: \n ${listJSON(latestList).list}`));
       } else {
-        console.log(chalk.green('\n Removing done!'));
+        console.log(chalk.green('\n Remove project completed!'));
         console.log(chalk.grey(' There is none of project!'));
       }
     }

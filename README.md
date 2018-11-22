@@ -40,6 +40,12 @@ jms list 或 jms ls
 jms remove 或 jms rm
 ```
 
+更新项目基本信息:
+
+```bash
+jms refresh 或 jms re
+```
+
 更换 npm 源:
 
 ```bash

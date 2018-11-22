@@ -37,7 +37,7 @@ function changeSource(number) {
         console.log(error);
         process.exit();
       }
-      console.log(chalk.green('\n Changing done!'));
+      console.log(chalk.green('\n Change source completed!'));
       console.log(chalk.white(`\n Use npm source: ${sources[number]}`));
       resolve();
     });
