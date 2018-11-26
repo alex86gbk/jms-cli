@@ -200,21 +200,21 @@ const urlHelper = new UrlHelper(location);
     let winHeight = $(this).height();
     let bodyHeight = $('body').height();
     let edge = bodyHeight - winHeight - winPosTop;
-    const bottomElementHeight = $('#' + sidebarItems[sidebarItems.length - 1]).next().height();
+    let $bottomElement = $('#' + sidebarItems[sidebarItems.length - 1]);
+    const bottomElementHeight = $bottomElement.height();
 
     $.each(sidebarItems, function () {
       const $this = $('#' + this);
 
-      if (winPosTop > $this.offset().top && winPosTop < $this.next().offset().top) {
+      if (winPosTop > $this.offset().top - 80 && winPosTop < $this.next().offset().top) {
         activeSidebarItem(this);
       }
     });
 
-    if (edge > bottomElementHeight && edge < bottomElementHeight + 80) {
-      activeSidebarItem(sidebarItems[sidebarItems.length - 2]);
-    }
-    else if (edge < bottomElementHeight) {
-      activeSidebarItem(sidebarItems[sidebarItems.length - 1]);
+    if (bottomElementHeight < winHeight) {
+      if (edge === -50) {
+        activeSidebarItem(sidebarItems[sidebarItems.length - 1]);
+      }
     }
   };
   /*------------------------------- END EVENT ----------------------------------*/

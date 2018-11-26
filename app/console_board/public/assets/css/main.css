@@ -103,18 +103,32 @@ input + label {
 /*
  * Main content
  */
+h3.page-header {
+  margin: 80px 0 20px 0 !important;
+  border-bottom: none !important;
+}
 .main .page-header {
   margin: 10px 0;
 }
 .main .btn {
   margin: 0 5px;
 }
-.table-responsive .page-header {
+.page-section {
+  position: relative;
+  top: -70px;
+}
+.page-section .page-header {
   float: left;
   border-bottom: none;
   padding-left: 5px;
 }
-.table-responsive .btn-link:focus {
+.page-section .page-header + .row {
+  clear: both;
+}
+.page-section .fixed-table-toolbar {
+  margin-top: 65px;
+}
+.page-section .btn-link:focus {
   outline: none;
 }
 
