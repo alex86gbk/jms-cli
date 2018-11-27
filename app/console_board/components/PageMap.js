@@ -46,14 +46,14 @@ function generatePageMap(projectPath, root, fileStats) {
   if (projectSetting.publicPath === '/') {
     link =
       'http://localhost:' +
-      projectSetting.devServerPort +
+      projectSetting.dev.port +
       root.replace(path.resolve(projectPath, pageRoot), '').replace(/\\/g, '/') +
       '/' +
       fileStats.name.replace(/\.ejs$/, '.html');
   } else {
     link =
       'http://localhost:' +
-      projectSetting.devServerPort +
+      projectSetting.dev.port +
       projectSetting.publicPath +
       root.replace(path.resolve(projectPath, pageRoot), '').replace(/\\/g, '/') +
       '/' +
