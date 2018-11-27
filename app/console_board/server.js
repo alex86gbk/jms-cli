@@ -11,12 +11,14 @@ const log = require('./log');
 
 const index = require('./routes/index');
 
+global.logger = null;
+
 /**
  * 初始化 express
  */
-function initExpressApp(logger) {
-  app.use(logger.winstonWarn());
-  app.use(logger.winstonError());
+function initExpressApp() {
+  app.use(global.logger.winstonWarn());
+  app.use(global.logger.winstonError());
   app.set('views', path.resolve(__dirname, 'views'));
   app.set('view engine', 'jade');
   app.use('/public', express.static(path.resolve(__dirname, 'public')));
@@ -24,7 +26,7 @@ function initExpressApp(logger) {
   app.use(bodyParser.urlencoded({extended: false}));
 
   http.listen(3008);
-  logger.infoLogger.info('Express started on port 3008');
+  global.logger.infoLogger.info('Express started on port 3008');
 
   return Promise.resolve(true);
 }
@@ -49,9 +51,9 @@ module.exports = (options) => {
   co(function *() {
     const appPath = yield init.initAppPath();
     const logPath = yield init.initLogPath(appPath);
-    const logger = yield log(logPath);
+    global.logger = yield log(logPath);
 
-    yield initExpressApp(logger);
+    yield initExpressApp();
     yield routers();
 
     options.onStart && options.onStart();

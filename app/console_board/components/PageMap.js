@@ -100,9 +100,7 @@ async function getPageMap(projectPath) {
   });
 
   walker.on('errors', function (root, nodeStatsArray, next) {
-    console.log('------------- error -------------');
-    console.log(`root: ${root}`);
-    console.log(`nodeStatsArray: ${nodeStatsArray}`);
+    global.logger.errorLogger.error('catch error: ', `root: ${root} \nnodeStatsArray: ${nodeStatsArray}`);
     next();
   });
 

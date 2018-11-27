@@ -10,6 +10,8 @@ function getSetting(projectPath) {
   try {
     delete require.cache[require.resolve(`${projectPath}/.projectrc.js`)];
     setting = require(`${projectPath}/.projectrc.js`);
+    setting.publicPath = `/${setting.publicPath.join('/')}`;
+    setting.startPage = setting.startPage ? setting.startPage : '';
   } catch (err) {
     setting = {
       dev: {
@@ -20,17 +22,12 @@ function getSetting(projectPath) {
         proxyPath: '/api',
         YAPI: '',
       },
-      publicPath: []
+      publicPath: [],
     };
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
-  return {
-    devServerPort: setting.dev.port,
-    mockServerPort: setting.mock.port,
-    proxyPath: setting.mock.proxyPath,
-    mockYAPI: setting.mock.YAPI,
-    publicPath: `/${setting.publicPath.join('/')}`,
-  }
+  return setting;
 }
 
 /**
@@ -49,7 +46,8 @@ async function setSetting(projectPath, projectSetting) {
     "dev": {
       "port": parseInt(data.devServerPort)
     },
-    "publicPath": data.publicPath.replace(/^\//, '').split('/')
+    "publicPath": data.publicPath.replace(/^\//, '').split('/'),
+    "startPage": data.startPage,
   };
 
   if (setting["publicPath"][0] === '') {
@@ -61,6 +59,8 @@ async function setSetting(projectPath, projectSetting) {
 
     return Promise.resolve();
   } catch (err) {
+    global.logger.errorLogger.error('catch error: ', err.stack);
+
     return Promise.reject();
   }
 }

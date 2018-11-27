@@ -86,6 +86,7 @@ function generateServiceApi(projectPath, root, fileStats) {
     });
   } catch (err) {
     apiFunction = [];
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   return apiFunction;
@@ -136,7 +137,7 @@ async function getMock(projectPath, req) {
   let property;
 
   try {
-    if (global.JMSVersion >= global.settableVersion) {
+    if (global.JMSVersion >= global.versionMap['release-0.2.0'].version) {
       property = require(path.resolve(projectPath, 'mock', req.category, req.name));
     } else {
       property = require(path.resolve(projectPath, 'api', req.category))[req.name];
@@ -154,6 +155,8 @@ async function getMock(projectPath, req) {
       return Promise.resolve(JSON.stringify(property));
     }
   } catch (err) {
+    global.logger.errorLogger.error('catch error: ', err.stack);
+
     return Promise.resolve(null);
   }
 }

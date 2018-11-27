@@ -1,72 +1,101 @@
-h3(class="page-header" id="project_setting")
-  | 项目配置
-div(class="row setting")
-  if setting
-    form(id="setting_form")
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon" ) 前端服务端口（默认：
-            code 8080
-            | ）
-            span(class="text-danger") 必填
-          input(type="text" class="form-control" value="#{setting.devServerPort}" id="dev_server_port" name="dev_server_port")
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") Mock 数据服务端口（默认：
-            code 3000
-            | ）
-            span(class="text-danger") 必填
-          input(type="text" class="form-control" value="#{setting.mockServerPort}" id="mock_server_port" name="mock_server_port")
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") 反向代理路径（默认：
-            code /api
-            | ）
-            span(class="text-danger") 必填
-          input(type="text" class="form-control" value="#{setting.proxyPath}" id="proxy_path" name="proxy_path")
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") YAPI 数据地址（如：
-            code http://10.0.2.231:3333/mock/XX
-            | ）
-          input(type="text" class="form-control" value="#{setting.mockYAPI}" id="mock_YAPI" name="mock_YAPI")
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") 发布路径（默认：
-            code /Content
-            | ）
-            span(class="text-danger") 必填
-          input(type="text" class="form-control" value="#{setting.publicPath}" id="public_path" name="public_path")
-      div(class="text-center col-lg-12 col-sm-12 col-md-12")
-        button(type="submit" class="btn btn-primary") 保存
-  else
-    form
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon" ) 前端服务端口（默认：8080）
-          input(type="text" class="form-control" id="dev_server_port" disabled)
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") Mock 数据服务端口（默认：3000）
-          input(type="text" class="form-control" id="mock_server_port" disabled)
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") 反向代理路径（默认：/api 选填）
-          input(type="text" class="form-control" id="proxy_path" disabled)
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") YAPI 数据地址（如：http://10.0.2.231:3333/mock/XX）
-          input(type="text" class="form-control" id="mock_YAPI" disabled)
-      div(class="col-lg-6 col-sm-6 col-md-6")
-        div(class="form-group")
-          label(class="input-group-addon") 发布路径（默认：/Content）
-          input(type="text" class="form-control" id="public_path" disabled)
-    div(class="clearfix")
-    div(class="col-md-12")
-      div(class="alert alert-info")
-        strong 提示！
-        | 当前 JMS 版本为 [#{baseInfo.JMSVersion}]。JMS 版本 >= [#{settableVersion}] 可使用此功能。当前版本项目配置请直接
-        u 修改
-        | 项目文件或
-        u 升级
-        | 版本。
+div(class="page-section" id="project_setting")
+  h3(class="page-header")
+    | 项目配置
+  div(class="row setting")
+    if setting
+      form(id="setting_form" class="clearfix")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon" ) 前端服务端口（默认：
+              code 8080
+              | ）
+              span(class="text-danger") 必填
+            input(type="text" class="form-control" value="#{setting.dev.port}" id="dev_server_port" name="dev_server_port")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") Mock 数据服务端口（默认：
+              code 3000
+              | ）
+              span(class="text-danger") 必填
+            input(type="text" class="form-control" value="#{setting.mock.port}" id="mock_server_port" name="mock_server_port")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") 反向代理路径（默认：
+              code /api
+              | ）
+              span(class="text-danger") 必填
+            input(type="text" class="form-control" value="#{setting.mock.proxyPath}" id="proxy_path" name="proxy_path")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") YAPI 数据地址（如：
+              code http://10.0.2.231:3333/mock/XX
+              | ）
+            input(type="text" class="form-control" value="#{setting.mock.YAPI}" id="mock_YAPI" name="mock_YAPI")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") 发布路径（默认：
+              code /Content
+              | ）
+              span(class="text-danger") 必填
+            input(type="text" class="form-control" value="#{setting.publicPath}" id="public_path" name="public_path")
+        if setting.startPage
+          div(class="col-lg-6 col-sm-6 col-md-6")
+            div(class="form-group")
+              label(class="input-group-addon") 起始页（默认：
+                code /templates/guide.ejs
+                | ）
+              input(type="text" class="form-control" value="#{setting.startPage}" id="start_page" name="start_page")
+        else
+          div(class="col-lg-6 col-sm-6 col-md-6")
+            div(class="form-group")
+              label(class="input-group-addon") 起始页（
+                span(class="text-danger") JMS v#{release021}
+                  sup +
+                | 可用）
+              input(type="text" class="form-control" value="#{setting.startPage}" id="start_page" name="start_page" disabled)
+        div(class="col-md-2 col-sm-2 col-xs-2 col-md-offset-5 col-sm-offset-5 col-xs-offset-5")
+          div(class="block-5")
+          button(type="submit" class="btn btn-primary btn-block") 保存
+    else
+      form(class="clearfix")
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon" ) 前端服务端口（默认：
+              code 8080
+              | ）
+            input(type="text" class="form-control" id="dev_server_port" disabled)
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") Mock 数据服务端口（默认：
+              code 3000
+              | ）
+            input(type="text" class="form-control" id="mock_server_port" disabled)
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") 反向代理路径（默认：
+              code /api
+              | ）
+            input(type="text" class="form-control" id="proxy_path" disabled)
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") YAPI 数据地址（如：
+              code http://10.0.2.231:3333/mock/XX
+              | ）
+            input(type="text" class="form-control" id="mock_YAPI" disabled)
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") 发布路径（默认：
+              code /
+              | ）
+            input(type="text" class="form-control" id="public_path" disabled)
+        div(class="col-lg-6 col-sm-6 col-md-6")
+          div(class="form-group")
+            label(class="input-group-addon") 起始页
+            input(type="text" class="form-control" id="public_path" disabled)
+      div(class="clearfix")
+      div(class="col-md-12")
+        div(class="alert alert-info")
+          strong 提示！
+          | 当前 JMS 版本为 v#{baseInfo.JMSVersion}。JMS 版本 v#{preRelease011}
+          sup +
+          | 可使用此功能。

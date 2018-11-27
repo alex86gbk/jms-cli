@@ -26,6 +26,7 @@ function generateCategory(projectPath, root, fileStats, mock) {
     });
   } catch (err) {
     items = '';
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   mock.forEach((item) => {
@@ -107,7 +108,7 @@ async function getCategory(projectPath) {
   const filterReg = /Services\.js$/;
   let mock;
 
-  if (global.JMSVersion >= global.settableVersion) {
+  if (global.JMSVersion >= global.versionMap['release-0.2.0'].version) {
     mock = await getMockDir(projectPath);
   } else {
     mock = await getMockFile(projectPath);
@@ -124,9 +125,7 @@ async function getCategory(projectPath) {
   });
 
   walker.on('errors', function (root, nodeStatsArray, next) {
-    console.log('------------- error -------------');
-    console.log(`root: ${root}`);
-    console.log(`nodeStatsArray: ${nodeStatsArray}`);
+    global.logger.errorLogger.error('catch error: ', `root: ${root} \nnodeStatsArray: ${nodeStatsArray}`);
     next();
   });
 

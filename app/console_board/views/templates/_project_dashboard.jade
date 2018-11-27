@@ -1,47 +1,69 @@
-h3(class="page-header" id="project_dashboard")
-  | 仪表盘
-div(class="row")
-  div(class="col-lg-12")
+div(class="page-section" id="project_dashboard")
+  h3(class="page-header")
+    | 仪表盘
+  div(class="row dashboard")
     if serverStatus
-      ul(class="list-group")
-        li(class="list-group-item")
-          span 前端服务状态
-          if serverStatus.devServer === 0
-            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" data-loading-text="开启中...") 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server" disabled) 停止
-            span(class="badge list-group-item-danger")
-              | 未开启
-          else
-            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server") 停止
-            span(class="badge list-group-item-success")
-              | 运行中
-        li(class="list-group-item")
-          span Mock 数据服务状态
-          if serverStatus.mockServer === 0
-            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" data-loading-text="开启中...") 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server" disabled) 停止
-            span(class="badge list-group-item-danger")
-              | 未开启
-          else
-            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server") 停止
-            span(class="badge list-group-item-success")
-              | 运行中
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="panel panel-default")
+          div(class="panel-heading")
+            h3(class="panel-title") 前端服务状态
+          div(class="panel-body")
+            if serverStatus.devServer === 0
+              button(type="button" class="btn btn-primary btn-sm" data-type="dev-server" data-control="start" data-loading-text="开启中...")
+                span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+              button(type="button" class="btn btn-danger btn-sm" data-type="dev-server" data-control="stop" disabled)
+                span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+              span(class="badge list-group-item-danger pull-right")
+                | 未开启
+            else
+              button(type="button" class="btn btn-primary btn-sm" data-type="dev-server" data-control="start" disabled)
+                span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+              button(type="button" class="btn btn-danger btn-sm" data-type="dev-server" data-control="stop")
+                span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+              span(class="badge list-group-item-success pull-right")
+                | 运行中
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="panel panel-default")
+          div(class="panel-heading")
+            h3(class="panel-title") Mock 数据服务状态
+          div(class="panel-body")
+            if serverStatus.mockServer === 0
+              button(type="button" class="btn btn-primary btn-sm" data-type="mock-server" data-control="start" data-loading-text="开启中...")
+                span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+              button(type="button" class="btn btn-danger btn-sm" data-type="mock-server" data-control="stop" disabled)
+                span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+              span(class="badge list-group-item-danger pull-right")
+                | 未开启
+            else
+              button(type="button" class="btn btn-primary btn-sm" data-type="mock-server" data-control="start" disabled)
+                span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+              button(type="button" class="btn btn-danger btn-sm" data-type="mock-server" data-control="stop")
+                span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+              span(class="badge list-group-item-success pull-right")
+                | 运行中
     else
-      ul(class="list-group")
-        li(class="list-group-item")
-          span 前端服务状态
-            button(type="button" class="btn btn-success btn-xs" data-type="dev-server" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="dev-server" disabled) 停止
-        li(class="list-group-item")
-          span Mock 数据服务状态
-            button(type="button" class="btn btn-success btn-xs" data-type="mock-server" disabled) 开启
-            button(type="button" class="btn btn-danger btn-xs" data-type="mock-server" disabled) 停止
-      div(class="alert alert-info")
-        strong 提示！
-        | 当前 JMS 版本为 [#{baseInfo.JMSVersion}]。JMS 版本 >= [#{settableVersion}] 可使用此功能。当前版本项目配置请直接
-        u 修改
-        | 项目文件或
-        u 升级
-        | 版本。
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="panel panel-default")
+          div(class="panel-heading")
+            h3(class="panel-title") 前端服务状态
+          div(class="panel-body")
+            button(type="button" class="btn btn-primary btn-sm" data-type="dev-server" disabled)
+              span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+            button(type="button" class="btn btn-danger btn-sm" data-type="dev-server" disabled)
+              span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+      div(class="col-lg-6 col-sm-6 col-md-6")
+        div(class="panel panel-default")
+          div(class="panel-heading")
+            h3(class="panel-title") Mock 数据服务状态
+          div(class="panel-body")
+            button(type="button" class="btn btn-primary btn-sm" data-type="mock-server" disabled)
+              span(class="glyphicon glyphicon-play" aria-hidden="true") 开启
+            button(type="button" class="btn btn-danger btn-sm" data-type="mock-server" disabled)
+              span(class="glyphicon glyphicon-stop" aria-hidden="true") 停止
+      div(class="clearfix")
+      div(class="col-lg-12")
+        div(class="alert alert-info")
+          strong 提示！
+          | 当前 JMS 版本为 v#{baseInfo.JMSVersion}。JMS 版本 v#{release020}
+          sup +
+          | 可使用此功能。

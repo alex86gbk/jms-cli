@@ -20,12 +20,14 @@ function getServerStatus(projectPath) {
     devServerStatus = fs.readFileSync(devPid, 'utf-8');
   } catch (err) {
     devServerStatus = 0;
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   try {
     mockServerStatus = fs.readFileSync(mockPid, 'utf-8');
   } catch (err) {
     mockServerStatus = 0;
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   return {
@@ -46,12 +48,12 @@ async function startServer(projectPath, projectServer) {
 
   if (server === 'dev-server') {
     exec(devCommand).on('exit', function () {
-      console.log('dev-server stop');
+      global.logger.infoLogger.info('dev-server stop');
     });
   }
   if (server === 'mock-server') {
     exec(mockCommand).on('exit', function () {
-      console.log('mock-server stop');
+      global.logger.infoLogger.info('mock-server stop');
     });
   }
 
@@ -74,12 +76,14 @@ async function stopServer(projectPath, projectServer) {
     devServerStatus = fs.readFileSync(devPid, 'utf-8');
   } catch (err) {
     devServerStatus = 0;
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   try {
     mockServerStatus = fs.readFileSync(mockPid, 'utf-8');
   } catch (err) {
     mockServerStatus = 0;
+    global.logger.errorLogger.error('catch error: ', err.stack);
   }
 
   if (server === 'dev-server' && devServerStatus !== 0) {
@@ -91,6 +95,7 @@ async function stopServer(projectPath, projectServer) {
         fs.unlinkSync(devPid);
       }
     } catch (err) {
+      global.logger.errorLogger.error('catch error: ', err.stack);
       if (stats.isFile()) {
         fs.unlinkSync(devPid);
       }
@@ -107,6 +112,7 @@ async function stopServer(projectPath, projectServer) {
         fs.unlinkSync(mockPid);
       }
     } catch (err) {
+      global.logger.errorLogger.error('catch error: ', err.stack);
       if (stats.isFile()) {
         fs.unlinkSync(mockPid);
       }

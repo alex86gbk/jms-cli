@@ -24,7 +24,7 @@ function listSource() {
 
 /**
  * 切换 npm 源
- * number {number}
+ * @param {number} number
  * @return {Promise}
  */
 function changeSource(number) {
@@ -37,7 +37,7 @@ function changeSource(number) {
         console.log(error);
         process.exit();
       }
-      console.log(chalk.green('\n Changing done!'));
+      console.log(chalk.green('\n Change source completed!'));
       console.log(chalk.white(`\n Use npm source: ${sources[number]}`));
       resolve();
     });
