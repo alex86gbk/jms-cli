@@ -11,6 +11,10 @@ const serverControl = require('../components/ServerControl');
 const setting = require('../components/Setting');
 
 global.versionMap = {
+  'release-0.2.1': {
+    version: '0.2.1',
+    gitHub: 'https://github.com/alex86gbk/js-multi-seed/releases/tag/0.2.1'
+  },
   'release-0.2.0': {
     version: '0.2.0',
     gitHub: 'https://github.com/alex86gbk/js-multi-seed/releases/tag/0.2.0'
@@ -216,6 +220,7 @@ function renderDefaultView(req, res) {
       baseInfo: baseInfo,
       preRelease011: global.versionMap['pre-release-0.1.1'].version,
       release020: global.versionMap['release-0.2.0'].version,
+      release021: global.versionMap['release-0.2.1'].version,
       setting: preRelease011 ? setting.getSetting(currentProject) : null,
       serverStatus: release020 ? serverControl.getServerStatus(currentProject) : null,
     });

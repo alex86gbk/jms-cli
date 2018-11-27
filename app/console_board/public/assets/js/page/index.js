@@ -41,7 +41,7 @@ const urlHelper = new UrlHelper(location);
       $sidebar: $('#sidebar'),
       $projectServiceApi: $('#project_service_api'),
       $settingForm: $('#setting_form'),
-      $projectDashboard: $('#project_dashboard').next(),
+      $projectDashboard: $('#project_dashboard'),
     };
   };
 
@@ -162,6 +162,7 @@ const urlHelper = new UrlHelper(location);
       proxyPath: $('#proxy_path').val(),
       mockYAPI: $('#mock_YAPI').val(),
       publicPath: $('#public_path').val(),
+      startPage: $('#start_page').val(),
     };
     const $btn = $(this).button('loading');
 
@@ -578,6 +579,9 @@ const urlHelper = new UrlHelper(location);
           required: true,
           checkPath: true,
         },
+        start_page: {
+          checkPagePath: true,
+        },
       },
       messages: {
         dev_server_port: {
@@ -603,6 +607,9 @@ const urlHelper = new UrlHelper(location);
           required: "请输入发布路径",
           checkPath: "请输入有效的发布路径",
         },
+        start_page: {
+          checkPagePath: "请输入有效的起始页地址",
+        },
       }
     });
 
@@ -615,6 +622,11 @@ const urlHelper = new UrlHelper(location);
       let checkPath = /^\/$|^\/[a-zA-z]+[^\s]*$/;
       return this.optional(element) || (checkPath.test(value));
     }, "请输入有效的路径！");
+
+    $.validator.addMethod("checkPagePath", function (value, element, params) {
+      let checkPath = /^\/$|^\/[a-zA-z]+[^\s]*\.ejs$/;
+      return this.optional(element) || (checkPath.test(value));
+    }, "请输入有效的页面地址！");
   };
 
   /**
