@@ -68,7 +68,7 @@ module.exports = () => {
       console.log(chalk.grey(' The project list is:'));
       console.log(`\n ${listJSON(options).list}`);
 
-      const number = yield prompt(`\nChoose a order number []: `);
+      const number = yield prompt(`\nChoose a order number [${listJSON(options).key}]: `);
 
       yield removeProject(number);
     } else {
