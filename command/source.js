@@ -23,6 +23,24 @@ function listSource() {
 }
 
 /**
+ * 获取当前 npm 源
+ */
+function getCurrentSource() {
+  const command = 'npm config get registry';
+
+  return new Promise((resolve) => {
+    exec(command, (error, stdout) => {
+      if (error) {
+        console.log(error);
+        process.exit();
+      }
+      console.log(chalk.green(`\n Now use: `) + chalk.yellow(stdout));
+      resolve();
+    });
+  });
+}
+
+/**
  * 切换 npm 源
  * @param {number} number
  * @return {Promise}
@@ -46,6 +64,7 @@ function changeSource(number) {
 
 module.exports = () => {
   co(function * source() {
+    yield getCurrentSource();
     yield listSource();
 
     const number = yield prompt(`\nChoose a order number [${listJSON(sources).key}]: `);
