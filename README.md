@@ -29,6 +29,9 @@ jms add D:\my-project 或 jms a D:\my-project
 ```bash
 jms console 或 jms cb
 ```
+![image](https://user-images.githubusercontent.com/1990992/56567809-48d13900-65e8-11e9-8896-d28d23f30e37.png)
+![image](https://user-images.githubusercontent.com/1990992/56567831-52f33780-65e8-11e9-9fa6-7093d400ffa9.png)
+![image](https://user-images.githubusercontent.com/1990992/56567860-5dadcc80-65e8-11e9-93e5-bfc5beb249cb.png)
 
 列出本机所有的项目:
 
