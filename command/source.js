@@ -15,7 +15,7 @@ function listSource() {
   return new Promise((resolve) => {
     fs.readFile(`${__dirname}/../sources.json`, (err) => {
       if (err) console.log(err);
-      console.log(chalk.grey(' The source list is:'));
+      console.log(chalk.blue(' The source list is:'));
       console.log(`\n ${listJSON(sources).list}`);
       resolve();
     });

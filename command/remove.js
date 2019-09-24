@@ -49,10 +49,10 @@ function removeProject(number) {
 
       if (projects.length) {
         console.log(chalk.green('\n Remove project completed!'));
-        console.log(chalk.white(`\n The latest project list is: \n ${listJSON(latestList).list}`));
+        console.log(chalk.blue(`\n The latest project list is: \n ${listJSON(latestList).list}`));
       } else {
         console.log(chalk.green('\n Remove project completed!'));
-        console.log(chalk.grey(' There is none of project!'));
+        console.log(chalk.blue(' There is none of project!'));
       }
     }
 
@@ -65,14 +65,14 @@ module.exports = () => {
     const options = yield listProject();
 
     if (projects.length) {
-      console.log(chalk.grey(' The project list is:'));
+      console.log(chalk.blue(' The project list is:'));
       console.log(`\n ${listJSON(options).list}`);
 
       const number = yield prompt(`\nChoose a order number [${listJSON(options).key}]: `);
 
       yield removeProject(number);
     } else {
-      console.log(chalk.grey(' There is none of project!'));
+      console.log(chalk.blue(' There is none of project!'));
     }
 
     process.exit();

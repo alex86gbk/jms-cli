@@ -13,7 +13,7 @@ let projects;
  */
 function listProject() {
   return new Promise((resolve) => {
-    console.log(chalk.grey(' The project list is:'));
+    console.log(chalk.blue(' The project list is:'));
     console.log(`\n ${projects.join('\n ')}`);
     resolve();
   });
