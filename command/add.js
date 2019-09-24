@@ -44,7 +44,7 @@ function addProject(projectName) {
   return new Promise((resolve) => {
     db.insertDataSync(project, data).then(() => {
       console.log(chalk.green(`\n New project ${path.resolve(projectName)} has been added!`));
-      console.log(chalk.grey(' The latest project list is:'));
+      console.log(chalk.blue(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
       resolve();
       process.exit();

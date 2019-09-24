@@ -49,7 +49,7 @@ function addProject(projectName) {
   return new Promise((resolve) => {
     db.insertDataSync(project, data).then(() => {
       console.log(chalk.green(`\n New project ${path.resolve(process.cwd(), projectName)} will be generating!`));
-      console.log(chalk.grey(' The latest project list is:'));
+      console.log(chalk.blue(' The latest project list is:'));
       console.log(`\n ${projects.join('\n ')}`);
       resolve();
     });
@@ -57,13 +57,37 @@ function addProject(projectName) {
 }
 
 /**
- * 下载版本库
+ * 下载版本库（安装Vue依赖支持）
+ * @param url {String}
+ * @param projectName {String}
+ * @return {Promise}
+ */
+function cloneRepositoryWithVue(url, projectName) {
+  const command = `git clone ${url} ${projectName} && cd ${projectName} && git checkout master`;
+
+  console.log(chalk.white('\n Start generating...'));
+
+  return new Promise((resolve) => {
+    exec(command, (error) => {
+      if (error) {
+        console.log(error);
+        process.exit();
+      }
+      utils.deleteFolder(path.resolve(process.cwd(), projectName, '.git'));
+      console.log(chalk.green(' Generation completed!'));
+      resolve();
+    });
+  });
+}
+
+/**
+ * 下载版本库（仅React依赖支持）
  * @param url {String}
  * @param projectName {String}
  * @return {Promise}
  */
 function cloneRepository(url, projectName) {
-  const command = `git clone ${url} ${projectName} && cd ${projectName} && git checkout master`;
+  const command = `git clone ${url} ${projectName} && cd ${projectName} && git checkout react`;
 
   console.log(chalk.white('\n Start generating...'));
 
@@ -124,9 +148,18 @@ module.exports = (url) => {
 
     yield checkProject(projectName);
     yield addProject(projectName);
-    yield cloneRepository(url, projectName);
 
-    const install = yield prompt('Would you like to install project? It`s maybe taken a while! (yes/no)');
+    console.log(chalk.green('\n Need support Vue?'));
+    const needVueSupport = yield prompt(' please type: (yes/no) ');
+
+    if (needVueSupport === 'yes' || needVueSupport === 'y') {
+      yield cloneRepositoryWithVue(url, projectName);
+    } else {
+      yield cloneRepository(url, projectName);
+    }
+
+    console.log(chalk.blue('\n Would you like to install project? It`s maybe taken a while! '));
+    const install = yield prompt(' please type: (yes/no) ');
 
     yield installProject(install, projectName);
   });
