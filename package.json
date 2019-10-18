@@ -33,9 +33,9 @@
     "express-winston": "2.6.0",
     "extract-comments": "1.0.0",
     "fkill": "5.3.0",
-    "jade": "1.11.0",
     "nedb": "1.8.0",
     "opn": "5.4.0",
+    "pug": "2.0.4",
     "walk": "2.3.14",
     "winston": "2.4.4"
   },

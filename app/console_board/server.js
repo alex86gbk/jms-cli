@@ -20,7 +20,7 @@ function initExpressApp() {
   app.use(global.logger.winstonWarn());
   app.use(global.logger.winstonError());
   app.set('views', path.resolve(__dirname, 'views'));
-  app.set('view engine', 'jade');
+  app.set('view engine', 'pug');
   app.use('/public', express.static(path.resolve(__dirname, 'public')));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
