@@ -48,8 +48,12 @@ function getCurrentProject(req, res, next) {
         path: item.path
       };
     });
-    currentProject = currentProject ? currentProject : projects[0].path;
-    next();
+    try {
+      currentProject = currentProject ? currentProject : projects[0].path;
+      next();
+    } catch (err) {
+      next();
+    }
   });
 }
 

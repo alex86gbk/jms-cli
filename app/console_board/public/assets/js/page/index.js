@@ -231,14 +231,16 @@ const urlHelper = new UrlHelper(location);
       setDomMap();
       attachEvent();
       getSidebarItem();
-      getPageMap().then(initPageMapTable);
-      getCategory().then(initCategoryTable);
-      getServiceApi().then(initServiceApiTable);
-      initValidate();
-      $('[data-toggle="popover"]').popover({
-        container: '.navbar-static-top',
-        trigger: 'focus',
-      });
+      if (configMap.JMSVersion !== '') {
+        getPageMap().then(initPageMapTable);
+        getCategory().then(initCategoryTable);
+        getServiceApi().then(initServiceApiTable);
+        initValidate();
+        $('[data-toggle="popover"]').popover({
+          container: '.navbar-static-top',
+          trigger: 'focus',
+        });
+      }
     });
   };
 

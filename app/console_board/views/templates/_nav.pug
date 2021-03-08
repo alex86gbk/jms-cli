@@ -2,7 +2,7 @@ nav(class="navbar navbar-inverse navbar-static navbar-static-top")
   div(class="container-fluid")
     div(class="navbar-header")
       span(class="navbar-brand") 当前项目
-        a(tabindex="0" role="button" class="btn btn-link btn-xs" data-toggle="popover" data-placement="bottom" data-content="#{currentProject}") #{baseInfo.name}
+        a(tabindex="0" role="button" class="btn btn-link btn-xs" data-toggle="popover" data-placement="bottom" data-content=currentProject) #{baseInfo.name}
       span(class="navbar-brand") 项目版本
         kbd(id="version") #{baseInfo.version}
       span(class="navbar-brand") JMS 版本
@@ -17,9 +17,11 @@ nav(class="navbar navbar-inverse navbar-static navbar-static-top")
             each project in projects
               if currentProject === project.path
                 li(class="active")
-                  a(href="/console_board?project=#{project.path}")
-                    =project.name
+                  - const path = '/console_board?project=' + project.path;
+                    a(href=path)
+                      =project.name
               else
                 li
-                  a(href="/console_board?project=#{project.path}")
-                    =project.name
+                  - const path = '/console_board?project=' + project.path;
+                    a(href=path)
+                      =project.name
