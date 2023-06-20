@@ -88,6 +88,9 @@ jms refresh 或 jms re
 ```bash
 jms source 或 jms s
 ```
+[【望周知】淘宝 NPM 镜像站喊你切换新域名啦](https://zhuanlan.zhihu.com/p/430580607)
+
+老 registry.npm.taobao.org 域名 换成 registry.npmmirror.com
 
 选择源序号，进行切换
 
